@@ -2,13 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://www.andyroberts.nz/about/</loc>
+    <loc>https://example.com/about/</loc>
     <lastmod>2021-04-14T19:58:42+12:00</lastmod>
   </url><url>
-    <loc>https://www.andyroberts.nz/categories/</loc>
+    <loc>https://example.com/categories/</loc>
   </url><url>
-    <loc>https://www.andyroberts.nz/</loc>
+    <loc>https://example.com/series/</loc>
   </url><url>
-    <loc>https://www.andyroberts.nz/tags/</loc>
+    <loc>https://example.com/</loc>
+  </url><url>
+    <loc>https://example.com/tags/</loc>
   </url>
 </urlset>
