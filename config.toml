@@ -1,0 +1,76 @@
+baseURL = "https://www.andyroberts.nz"
+title = "All Things Azure & Cloud"
+themesDir = "themes/"
+theme = "hugo-theme-m10c"
+paginate = 8
+enableRobotsTXT = true
+gtagId = "G-SD58B2M7HG"
+googleAnalytics = "G-SD58B2M7HG"
+
+[menu]
+  [[menu.main]]
+    identifier = "home"
+    name = "Home"
+    url = "/"
+    weight = 1
+  [[menu.main]]
+    identifier = "posts"
+    name = "Posts"
+    url = "/posts/"
+    weight = 2
+  [[menu.main]]
+    identifier = "tags"
+    name = "Tags"
+    url = "/tags/"
+    weight = 3
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    url = "/about/"
+    weight = 4
+
+[params]
+  author = "Andy Roberts"
+  description = "Azure & All Things Cloud"
+  avatar = "profile.jpg"
+  menu_item_separator = " - "
+  [[params.social]]
+    icon = "twitter"
+    name = "Twitter"
+    url = "https://twitter.com/andyr2319"
+  [[params.social]]
+    icon = "linkedin"
+    name = "LinkedIn"
+    url = "https://www.linkedin.com/in/andy-roberts8939/"
+  [[params.social]]
+    icon = "github"
+    name = "Github"
+    url = "https://github.com/andyr8939"
+  [[params.social]]
+    icon = "mail"
+    name = "email"
+    url = "mailto:andyr8939@gmail.com"
+
+  # Default theme
+  #[params.style]
+  #  darkestColor = "#242930"
+  #  darkColor = "#353b43"
+  #  lightColor = "#afbac4"
+  #  lightestColor = "#ffffff"
+  #  primaryColor = "#57cc8a"
+
+  # Green theme
+  #[params.style]
+  #  darkestColor = "#315659"
+  #  darkColor = "#253031"
+  #  lightColor = "#96a879"
+  #  lightestColor = "#fff"
+  #  primaryColor = "#dad865"
+
+  # Red theme
+  #[params.style]
+  #  darkestColor = "#d35050"
+  #  darkColor = "#212121"
+  #  lightColor = "#d6d6d6"
+  #  lightestColor = "#d3d3d3"
+  #  primaryColor = "#ffffff"
