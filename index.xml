@@ -5,7 +5,18 @@
     <link>https://www.andyroberts.nz/</link>
     <description>Recent content on All Things Azure &amp; Cloud</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 18 Apr 2021 16:07:24 +1200</lastBuildDate><atom:link href="https://www.andyroberts.nz/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 19 Apr 2021 20:32:22 +1200</lastBuildDate><atom:link href="https://www.andyroberts.nz/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>About Me</title>
+      <link>https://www.andyroberts.nz/about/</link>
+      <pubDate>Mon, 19 Apr 2021 19:58:42 +1200</pubDate>
+      
+      <guid>https://www.andyroberts.nz/about/</guid>
+      <description>Hi, I&amp;rsquo;m Andy Roberts and welcome to my Blog!
+Currently I live in Auckland, New Zealand and work for a company called Vista Entertainment as a Cloud Engineer. Day to day, this means I am working primarily with Azure, but also with AWS. So each day I&amp;rsquo;m building infrastructure, automating deployments with tools such as Powershell and Terraform and generally all things Cloud.
+Before that I spent several years with companies such as WEX Inc which is where I honed my Cloud skills working on some pretty massive AWS deployments.</description>
+    </item>
+    
     <item>
       <title>Welcome to the Blog</title>
       <link>https://www.andyroberts.nz/posts/my-first-blog/</link>
@@ -14,18 +25,7 @@
       <guid>https://www.andyroberts.nz/posts/my-first-blog/</guid>
       <description>Hi, I&amp;rsquo;m Andy Roberts and welcome to my Blog!
 I wanted to start a blog for a while, as I working in the IT &amp;amp; Cloud Industry, I get so much value finding resources and useful knowledge from people using their free time to post blogs to share with others. So I thought it was about time I start giving back and do the same!
-Currently I live in Auckland, New Zealand and work for a company called Vista Entertainment as a Cloud Engineer.</description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>https://www.andyroberts.nz/about/</link>
-      <pubDate>Wed, 14 Apr 2021 19:58:42 +1200</pubDate>
-      
-      <guid>https://www.andyroberts.nz/about/</guid>
-      <description>Hi, I&amp;rsquo;m Andy Roberts and welcome to my Blog!
-I wanted to start a blog for a while, as I working in the IT &amp;amp; Cloud Industry, I get so much value finding resources and useful knowledge from people using their free time to post blogs to share with others. So I thought it was about time I start giving back and do the same!
-Currently I live in Auckland, New Zealand and work for a company called Vista Entertainment as a Cloud Engineer.</description>
+I&amp;rsquo;m planning to write as many articles as I can find time on with useful guides to what I have been working on, in the hope it helps people like you when searching out how to do something.</description>
     </item>
     
   </channel>
