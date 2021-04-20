@@ -2,6 +2,7 @@
 title: "Azure Logic Apps for Application Gateway Reports"
 date: 2021-04-20T13:59:18+12:00
 draft: true
+tags: ["azure","logic apps","kusto","application gateway","log analytics"]
 ---
 
 Web Frontend's are probably one of the most used workloads in Cloud today.  Your ingress is basically your income for many companies, and technologies used such as Apache, NGINX, IIS mixed with your edge devices make up this stack.
