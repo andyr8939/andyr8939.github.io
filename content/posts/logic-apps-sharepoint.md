@@ -1,7 +1,7 @@
 ---
 title: "Azure Logic Apps for Application Gateway Reports"
 date: 2021-04-20T13:59:18+12:00
-draft: true
+draft: false
 tags: ["azure","logic apps","kusto","application gateway","log analytics"]
 ---
 
