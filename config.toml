@@ -6,6 +6,7 @@ paginate = 8
 enableRobotsTXT = true
 gtagId = "G-SD58B2M7HG"
 googleAnalytics = "G-SD58B2M7HG"
+disqusShortname = "andyroberts-nz"
 
 [menu]
   [[menu.main]]
