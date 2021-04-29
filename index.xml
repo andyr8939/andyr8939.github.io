@@ -5,7 +5,17 @@
     <link>https://www.andyroberts.nz/</link>
     <description>Recent content on All Things Azure &amp; Cloud</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Tue, 20 Apr 2021 13:59:18 +1200</lastBuildDate><atom:link href="https://www.andyroberts.nz/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 29 Apr 2021 15:00:00 +1200</lastBuildDate><atom:link href="https://www.andyroberts.nz/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Azure Backups for Virtual Machines and SQL</title>
+      <link>https://www.andyroberts.nz/posts/azure-backup/</link>
+      <pubDate>Thu, 29 Apr 2021 15:00:00 +1200</pubDate>
+      
+      <guid>https://www.andyroberts.nz/posts/azure-backup/</guid>
+      <description>Backups are a necessity but it still amazes me the amount of companies I have worked at where you find backups are just not done, or just as bad, are done but are never checked!
+There are multiple ways to do backups depending where your data lives. Veeam, BackupExec, etc, but if you are running your infrastructure in Azure and you are using Virtual Machines then Azure Backup is an amazing tool for this.</description>
+    </item>
+    
     <item>
       <title>Azure Logic Apps for Application Gateway Reports</title>
       <link>https://www.andyroberts.nz/posts/logic-apps-sharepoint/</link>
