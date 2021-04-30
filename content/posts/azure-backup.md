@@ -2,6 +2,7 @@
 title: "Azure Backups for Virtual Machines and SQL"
 date: 2021-04-29T15:00:00+12:00
 draft: false
+tags: ["azure","azure backup","powershell","virtual machine","sql"]
 ---
 
 Backups are a necessity but it still amazes me the amount of companies I have worked at where you find backups are just not done, or just as bad, are done but are never checked!
