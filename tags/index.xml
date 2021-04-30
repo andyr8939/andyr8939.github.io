@@ -7,20 +7,56 @@
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Mon, 19 Apr 2021 20:32:22 +1200</lastBuildDate><atom:link href="https://www.andyroberts.nz/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>azure</title>
+      <link>https://www.andyroberts.nz/tags/azure/</link>
+      <pubDate>Thu, 29 Apr 2021 15:00:00 +1200</pubDate>
+      
+      <guid>https://www.andyroberts.nz/tags/azure/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>azure backup</title>
+      <link>https://www.andyroberts.nz/tags/azure-backup/</link>
+      <pubDate>Thu, 29 Apr 2021 15:00:00 +1200</pubDate>
+      
+      <guid>https://www.andyroberts.nz/tags/azure-backup/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>powershell</title>
+      <link>https://www.andyroberts.nz/tags/powershell/</link>
+      <pubDate>Thu, 29 Apr 2021 15:00:00 +1200</pubDate>
+      
+      <guid>https://www.andyroberts.nz/tags/powershell/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sql</title>
+      <link>https://www.andyroberts.nz/tags/sql/</link>
+      <pubDate>Thu, 29 Apr 2021 15:00:00 +1200</pubDate>
+      
+      <guid>https://www.andyroberts.nz/tags/sql/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>virtual machine</title>
+      <link>https://www.andyroberts.nz/tags/virtual-machine/</link>
+      <pubDate>Thu, 29 Apr 2021 15:00:00 +1200</pubDate>
+      
+      <guid>https://www.andyroberts.nz/tags/virtual-machine/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>application gateway</title>
       <link>https://www.andyroberts.nz/tags/application-gateway/</link>
       <pubDate>Tue, 20 Apr 2021 13:59:18 +1200</pubDate>
       
       <guid>https://www.andyroberts.nz/tags/application-gateway/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>azure</title>
-      <link>https://www.andyroberts.nz/tags/azure/</link>
-      <pubDate>Tue, 20 Apr 2021 13:59:18 +1200</pubDate>
-      
-      <guid>https://www.andyroberts.nz/tags/azure/</guid>
       <description></description>
     </item>
     
