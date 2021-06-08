@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>HTTPS to AKS with Traefik and Lets Encrypt // All Things Azure &amp; Cloud</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.82.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Andy Roberts" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://www.andyroberts.nz/css/main.min.4a7ec8660f9a44b08c4da97c5f2e31b1192df1d4d0322e65c0dbbc6ecb1b863f.css" />
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SD58B2M7HG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-SD58B2M7HG', { 'anonymize_ip': false });
+}
+</script>
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="HTTPS to AKS with Traefik and Lets Encrypt"/>
+<meta name="twitter:description" content="I&rsquo;ll preface this blog post with the fact that I am FAR FAR away from any kind of expert on Kubernetes and AKS. I am still very early in my journey with it, and a lot of my experience so far is trial and error. I have also found that there is a lot of documentation out there on how to do things, but a lot of it assumes a fairly decent knowledge of how everything sticks together, so for a newbie to Kubernetes it can be quite challenging."/>
+
+    <meta property="og:title" content="HTTPS to AKS with Traefik and Lets Encrypt" />
+<meta property="og:description" content="I&rsquo;ll preface this blog post with the fact that I am FAR FAR away from any kind of expert on Kubernetes and AKS. I am still very early in my journey with it, and a lot of my experience so far is trial and error. I have also found that there is a lot of documentation out there on how to do things, but a lot of it assumes a fairly decent knowledge of how everything sticks together, so for a newbie to Kubernetes it can be quite challenging." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.andyroberts.nz/posts/aks-traefik-https/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-06-04T15:10:24&#43;12:00" />
+<meta property="article:modified_time" content="2021-06-04T15:10:24&#43;12:00" />
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://www.andyroberts.nz"><img class="app-header-avatar" src="/profile.jpg" alt="Andy Roberts" /></a>
+      <h1>All Things Azure &amp; Cloud</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">Home</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/posts/">Posts</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tags/">Tags</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/about/">About</a>
+      </nav>
+      <p>Azure &amp; All Things Cloud</p>
+      <div class="app-header-social">
+        
+          <a href="https://twitter.com/andyr2319" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>Twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg>
+          </a>
+        
+          <a href="https://www.linkedin.com/in/andy-roberts8939/" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>LinkedIn</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg>
+          </a>
+        
+          <a href="https://github.com/andyr8939" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>Github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+          </a>
+        
+          <a href="mailto:andyr8939@gmail.com" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-mail">
+  <title>email</title>
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">HTTPS to AKS with Traefik and Lets Encrypt</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Jun 4, 2021
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          8 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line>
+</svg>
+              <a class="tag" href="https://www.andyroberts.nz/tags/azure/">azure</a>
+              <a class="tag" href="https://www.andyroberts.nz/tags/aks/">aks</a>
+              <a class="tag" href="https://www.andyroberts.nz/tags/kubernetes/">kubernetes</a>
+              <a class="tag" href="https://www.andyroberts.nz/tags/traefik/">traefik</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>I&rsquo;ll preface this blog post with the fact that I am FAR FAR away from any kind of expert on Kubernetes and AKS.  I am still very early in my journey with it, and a lot of my experience so far is trial and error.  I have also found that there is a lot of documentation out there on how to do things, but a lot of it assumes a fairly decent knowledge of how everything sticks together, so for a newbie to Kubernetes it can be quite challenging.</p>
+<p>So recently while working on some solutions at work, I had a need to test out some HTTPS ingress into an Azure Kubernetes (AKS) instance.  The most logical and easiest way to do this is with the Azure Application Gateway Ingress Controller (AGIC).  Honestly this is an amazing service from Azure and makes everything super easy, and for production instances I would highly recommend this.  But for this project, the ingress being used was <a href="https://traefik.io/traefik/">Traefik</a> and the requirement was to use automatically generated certificates from <a href="https://letsencrypt.org/">Lets Encrypt</a>.</p>
+<p>This is a fully support solution on Traefik, so once I spent a few hours reading, along with trial and error, it was actually pretty simple.  So I have tried to condense the steps down here to what I did. to get it working.</p>
+<p>Note - All the files I use for this are available in my <a href="https://github.com/andyr8939/azure/tree/main/aks-traefik-https">GitHub Repo</a> if you want to download and use instead of copy/paste.</p>
+<h2 id="setup-an-aks-cluster">Setup an AKS Cluster</h2>
+<p>You could use any deployment of Kubernetes for this, AKS, EKS, GKE or Minikube.  They should all work, but for me I&rsquo;m using Azure so this is based around AKS.   So first of all lets setup a quick single node AKS Cluster, which I&rsquo;m going to call <strong>Ironman</strong>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Login in Azure</span>
+az login
+<span style="color:#75715e"># Create some variables</span>
+rsg<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;aks-traefik&#34;</span>
+location<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;australiaeast&#34;</span>
+aksname<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ironman&#34;</span>
+
+<span style="color:#75715e"># Create a resource group</span>
+az group create --name $rsg --location $location
+
+<span style="color:#75715e"># Create an AKS cluster</span>
+az aks create --resource-group $rsg --name $aksname --node-count <span style="color:#ae81ff">1</span> --enable-addons monitoring --generate-ssh-keys
+
+<span style="color:#75715e"># Get the AKS credentials to use in my local kubeconfig</span>
+az aks get-credentials --resource-group $rsg --name $aksname
+</code></pre></div><h2 id="install-traefik">Install Traefik</h2>
+<p>Now your cluster is setup and working we need to install Traefik.  By far the easiest way to do this is with the Helm Chart that Traefik provide.  I am assuming here you have Helm setup but if you haven&rsquo;t there are excellent steps here for <a href="https://helm.sh/docs/intro/install/">installing Helm</a>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Add the Traefik Repo</span>
+helm repo add traefik https://helm.traefik.io/traefik
+<span style="color:#75715e"># Update Helm</span>
+helm repo update
+<span style="color:#75715e"># Install Traefik to your cluster</span>
+helm install traefik traefik/traefik
+</code></pre></div><p>As long as that all goes through you should have Traefik installed in your cluster, which for me using K9S to view showed it all ready to go.
+<img src="/images/traefik-blog-1.png" alt="traefik_running"></p>
+<h2 id="install-a-demo-app">Install a Demo App</h2>
+<p>Obviously you need somewhere to send traffic to for this demo.  You can use anything, but for quick web frontend demos I am a big fan of the <a href="https://hub.docker.com/r/containous/whoami">Containous Whoami docker image</a>.  Its nice and lightweight and gives a lot of good info when you are testing web traffic flows.</p>
+<p>To deploy it create a yaml file using whatever editor you use (its VSCode right?) with the below.  As mentioned earlier, you can also find all these files in my <a href="https://github.com/andyr8939/azure/tree/main/aks-traefik-https">GitHub repo</a>.</p>
+<p>Save the file as <strong>001-app.yaml</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">default</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">whoami</span>
+  <span style="color:#f92672">labels</span>: 
+    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">whoami</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">matchLabels</span>:
+      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">whoami</span>
+  <span style="color:#f92672">template</span>:
+    <span style="color:#f92672">metadata</span>:
+      <span style="color:#f92672">labels</span>:
+        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">whoami</span>
+    <span style="color:#f92672">spec</span>:
+      <span style="color:#f92672">containers</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">whoami-container</span>
+        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">containous/whoami</span>
+        <span style="color:#f92672">ports</span>: 
+          - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">web</span>
+            <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">80</span>
+</code></pre></div><p>Once you have done that deploy it to your cluster</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f 001-app.yaml
+</code></pre></div><h2 id="service-for-the-app">Service for the App</h2>
+<p>Next step is to create a simple service for the App to route traffic inside of the cluster.</p>
+<p>Save this file as <strong>002-service.yaml</strong>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">whoami</span>
+
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">ClusterIP</span>
+  <span style="color:#f92672">ports</span>:
+  - <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">80</span>
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">web</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">whoami</span>
+</code></pre></div><p>And then deploy it</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f 002-service.yaml
+</code></pre></div><h2 id="external-dns-configuration">External DNS Configuration</h2>
+<p>At this stage we have Traefik installed but not doing anything, as well as a demo app and local service.  Next you need to point an external DNS name to your cluster ingress.  This will depend entirely on your DNS provider, but for me I use Cloudflare with a cheap .xyz domain for test.   Run the below command and take the <strong>external-ip</strong> of your traefik ingress and use that IP for your DNS name.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get service
+</code></pre></div><h2 id="setup-certificate-manager">Setup Certificate Manager</h2>
+<p>To generate Lets Encrypt Certificates we need to use a Certificate Manager and the one I saw come up the most and had the most easy to understand documentation was <a href="https://cert-manager.io/docs/tutorials/acme/ingress/">Cert Manager</a>.</p>
+<p>To install it execute the following which is the latest stable version at the date of blog.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.yaml
+</code></pre></div><p>This installs pretty quick and you can see when its ready as a few pods will show up like this.</p>
+<p><img src="/images/traefik-blog-2.png" alt="cert_manager"></p>
+<h2 id="setup-lets-encrypt">Setup Lets Encrypt</h2>
+<p>Now we get to the meaty part of the cert creation.  There are a couple of steps to this, the first being to configure the cluster issuer to use Let Encrypt.  You can use the below manifest file, just change your email address and name of the secret to something you want to use. Save the file as <strong>003-lets-encrypt.yaml</strong>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">cert-manager.io/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterIssuer</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">whoami-cert</span> <span style="color:#75715e"># CHANGE THIS NAME</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">default</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">acme</span>:
+    <span style="color:#f92672">server</span>: <span style="color:#ae81ff">https://acme-v02.api.letsencrypt.org/directory</span>
+    <span style="color:#f92672">email</span>: <span style="color:#ae81ff">changem@gmail.com</span> <span style="color:#75715e"># CHANGE TO YOUR EMAIL</span>
+    <span style="color:#f92672">privateKeySecretRef</span>:
+      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">whoami-cert</span> <span style="color:#75715e"># CHANGE THIS NAME TO MATCH THE METADATA</span>
+    <span style="color:#f92672">solvers</span>:
+    - <span style="color:#f92672">http01</span>:
+        <span style="color:#f92672">ingress</span>:
+          <span style="color:#f92672">class</span>: <span style="color:#ae81ff">traefik</span>
+</code></pre></div><p>Then apply it</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f 003-lets-encrypt.yaml
+</code></pre></div><p>Next you will do the actual certificate creation part.  You will reference the issuer name from the previous step, but the other parts you need are the public DNS name of what you need the certificate to work with.  Again you can use the below manifest for this part, call it <strong>004-lets-encrypt-cert.yaml</strong> and change the settings to reflect your domain and names.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">cert-manager.io/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Certificate</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">aks.mydomain.xyz</span> <span style="color:#75715e"># This should be your domain name</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">default</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">secretName</span>: <span style="color:#ae81ff">aks.mydomain.xyz-tls</span> <span style="color:#75715e"># This will be your cert name in Kubernetes</span>
+  <span style="color:#f92672">issuerRef</span>:
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">whoami-cert</span> <span style="color:#75715e"># This should match from 003-lets-encrypt.yaml</span>
+    <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterIssuer</span>
+  <span style="color:#f92672">commonName</span>: <span style="color:#ae81ff">aks.mydomain.xyz</span> <span style="color:#75715e"># This is the main DNS name for the cert</span>
+  <span style="color:#f92672">dnsNames</span>:
+  - <span style="color:#ae81ff">aks.mydomain.xyz</span> <span style="color:#75715e"># You can add subdomains if you wish</span>
+</code></pre></div><p>Then apply it</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f 004-lets-encrypt-cert.yaml
+</code></pre></div><p>Once that is done it can take a few minutes to create the cert.   If you run <strong>kubectl get certificate</strong> you can see it being created, just wait for it to changed to <strong>TRUE</strong> as a Ready State.  In my tests it takes about 2-3 minutes to fully come up.  If its longer than that you have probably made a mistake in the yaml, so running <strong>kubectl describe certificate</strong> will show you the logs of whats happening.   Mine looked like this when it was ready.</p>
+<p><img src="/images/traefik-blog-3.png" alt="cert_ready"></p>
+<h2 id="ingress-route-to-the-app">Ingress Route to the App</h2>
+<p>Final step, lets tell Traefik to find your app.  This is done using an <strong>IngressRoute</strong> definition, and as long as your certificate has created OK, your DNS is pointed to your Traefik public IP, and you change all the values to reflect your certificate name and DNS names, the below manifest should do the trick.   Save it as <strong>005-ingress-route-https.yaml</strong>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">IngressRoute</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">traefik.containo.us/v1alpha1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">whoami</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">default</span>
+  <span style="color:#f92672">annotations</span>: <span style="color:#75715e"># If you are using local certs and not lets Encrypt - Remove this</span>
+    <span style="color:#f92672">kubernetes.io/ingress.class</span>: <span style="color:#ae81ff">traefik </span> <span style="color:#75715e"># If you are using local certs and not lets Encrypt - Remove this</span>
+    <span style="color:#f92672">cert-manager.io/cluster-issuer</span>: <span style="color:#ae81ff">whoami-cert </span> <span style="color:#75715e"># If you are using local certs and not lets Encrypt - Remove this</span>
+
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">entryPoints</span>: 
+    - <span style="color:#ae81ff">websecure</span>
+  <span style="color:#f92672">tls</span>:
+    <span style="color:#f92672">secretName</span>: <span style="color:#ae81ff">aks.mydomain.xyz-tls</span> <span style="color:#75715e"># Lets Encrypt Generated Cert from 004-lets-encrypt-cert.yaml - Change this to local cert if you don&#39;t want to use Lets Encrypt.</span>
+    <span style="color:#f92672">domains</span>:
+    - <span style="color:#f92672">main</span>: <span style="color:#ae81ff">aks.mydomain.xyz</span>
+      <span style="color:#f92672">sans</span>:
+      - <span style="color:#ae81ff">aks.mydomain.xyz</span>
+
+  <span style="color:#f92672">routes</span>:
+  - <span style="color:#f92672">match</span>: <span style="color:#ae81ff">Host(`aks.mydomain.xyz`) </span>
+    <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Rule</span>
+    <span style="color:#f92672">services</span>:
+    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">whoami</span>
+      <span style="color:#f92672">port</span>: <span style="color:#ae81ff">80</span>
+</code></pre></div><p>And apply the ingressroute manifest.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f 005-ingress-route-https.yaml
+</code></pre></div><h2 id="fingers-crossed">Fingers Crossed&hellip;..</h2>
+<p>Time to see if this worked.   Open a browser and go to your domain name you setup earlier, mine for this test was <a href="https://ironman.andyroberts.xyz">https://ironman.andyroberts.xyz</a> (won&rsquo;t work for you), and see if the app loads&hellip;.</p>
+<p>The SSL cert should be valid, include your domain name and be issued by R3 which is Lets Encrypt.</p>
+<p><img src="/images/traefik-blog-4.png" alt="site_done"></p>
+<p><strong>Congratulations!!!!</strong>  You did it, a nice simple HTTPs ingress to AKS via Traefik with auto generated SSL certificates.</p>
+<p>Now I wouldn&rsquo;t use this in production personally, I normally prefer full purchased certificates as there are a myriad of reasons to do that, but that all depends on your individual needs.  For many this could be all you need and I hope this has been helpful.</p>
+<h2 id="bonus---using-a-full-purchased-ssl-cert">Bonus - Using a full purchased SSL Cert</h2>
+<p>Like I said just, you may not want to use a dynamic Lets Encrypt cert.  If you already have a full SSL cert, probably a wildcard for your site, its actually super easy to do this.  I don&rsquo;t know if this is <em><strong>production ready</strong></em> but it was fine for me in quick testing so if its not please let me know.</p>
+<p>Take your existing cert and upload it into Kubernetes as a secret</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl create secret tls mysecretname --key mycert.key --cert mycert.crt
+</code></pre></div><p>Then in the <strong>005-ingress-route-https.yaml</strong> change the <strong>tls secretName</strong> to be the name of your new local secret, which above is <strong>mysecret</strong>.</p>
+<p>Hope that helps!  Have fun!</p>
+<p>Andy</p>
+
+    </div>
+    <div class="post-footer">
+      <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "andyroberts-nz" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

@@ -7,11 +7,38 @@
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Mon, 19 Apr 2021 20:32:22 +1200</lastBuildDate><atom:link href="https://www.andyroberts.nz/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>aks</title>
+      <link>https://www.andyroberts.nz/tags/aks/</link>
+      <pubDate>Fri, 04 Jun 2021 15:10:24 +1200</pubDate>
+      
+      <guid>https://www.andyroberts.nz/tags/aks/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>azure</title>
       <link>https://www.andyroberts.nz/tags/azure/</link>
-      <pubDate>Thu, 29 Apr 2021 15:00:00 +1200</pubDate>
+      <pubDate>Fri, 04 Jun 2021 15:10:24 +1200</pubDate>
       
       <guid>https://www.andyroberts.nz/tags/azure/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kubernetes</title>
+      <link>https://www.andyroberts.nz/tags/kubernetes/</link>
+      <pubDate>Fri, 04 Jun 2021 15:10:24 +1200</pubDate>
+      
+      <guid>https://www.andyroberts.nz/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>traefik</title>
+      <link>https://www.andyroberts.nz/tags/traefik/</link>
+      <pubDate>Fri, 04 Jun 2021 15:10:24 +1200</pubDate>
+      
+      <guid>https://www.andyroberts.nz/tags/traefik/</guid>
       <description></description>
     </item>
     

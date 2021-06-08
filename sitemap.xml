@@ -2,19 +2,31 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.andyroberts.nz/tags/aks/</loc>
+    <lastmod>2021-06-04T15:10:24+12:00</lastmod>
+  </url><url>
     <loc>https://www.andyroberts.nz/</loc>
-    <lastmod>2021-04-29T15:00:00+12:00</lastmod>
+    <lastmod>2021-06-04T15:10:24+12:00</lastmod>
   </url><url>
     <loc>https://www.andyroberts.nz/tags/azure/</loc>
-    <lastmod>2021-04-29T15:00:00+12:00</lastmod>
+    <lastmod>2021-06-04T15:10:24+12:00</lastmod>
+  </url><url>
+    <loc>https://www.andyroberts.nz/posts/aks-traefik-https/</loc>
+    <lastmod>2021-06-04T15:10:24+12:00</lastmod>
+  </url><url>
+    <loc>https://www.andyroberts.nz/tags/kubernetes/</loc>
+    <lastmod>2021-06-04T15:10:24+12:00</lastmod>
+  </url><url>
+    <loc>https://www.andyroberts.nz/posts/</loc>
+    <lastmod>2021-06-04T15:10:24+12:00</lastmod>
+  </url><url>
+    <loc>https://www.andyroberts.nz/tags/traefik/</loc>
+    <lastmod>2021-06-04T15:10:24+12:00</lastmod>
   </url><url>
     <loc>https://www.andyroberts.nz/tags/azure-backup/</loc>
     <lastmod>2021-04-29T15:00:00+12:00</lastmod>
   </url><url>
     <loc>https://www.andyroberts.nz/posts/azure-backup/</loc>
-    <lastmod>2021-04-29T15:00:00+12:00</lastmod>
-  </url><url>
-    <loc>https://www.andyroberts.nz/posts/</loc>
     <lastmod>2021-04-29T15:00:00+12:00</lastmod>
   </url><url>
     <loc>https://www.andyroberts.nz/tags/powershell/</loc>
