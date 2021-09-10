@@ -7,20 +7,47 @@
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Mon, 19 Apr 2021 20:32:22 +1200</lastBuildDate><atom:link href="https://www.andyroberts.nz/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>azure</title>
+      <link>https://www.andyroberts.nz/tags/azure/</link>
+      <pubDate>Fri, 10 Sep 2021 16:11:10 +1200</pubDate>
+      
+      <guid>https://www.andyroberts.nz/tags/azure/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>azure devops</title>
+      <link>https://www.andyroberts.nz/tags/azure-devops/</link>
+      <pubDate>Fri, 10 Sep 2021 16:11:10 +1200</pubDate>
+      
+      <guid>https://www.andyroberts.nz/tags/azure-devops/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>pipelines</title>
+      <link>https://www.andyroberts.nz/tags/pipelines/</link>
+      <pubDate>Fri, 10 Sep 2021 16:11:10 +1200</pubDate>
+      
+      <guid>https://www.andyroberts.nz/tags/pipelines/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ubuntu</title>
+      <link>https://www.andyroberts.nz/tags/ubuntu/</link>
+      <pubDate>Fri, 10 Sep 2021 16:11:10 +1200</pubDate>
+      
+      <guid>https://www.andyroberts.nz/tags/ubuntu/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>aks</title>
       <link>https://www.andyroberts.nz/tags/aks/</link>
       <pubDate>Fri, 04 Jun 2021 15:10:24 +1200</pubDate>
       
       <guid>https://www.andyroberts.nz/tags/aks/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>azure</title>
-      <link>https://www.andyroberts.nz/tags/azure/</link>
-      <pubDate>Fri, 04 Jun 2021 15:10:24 +1200</pubDate>
-      
-      <guid>https://www.andyroberts.nz/tags/azure/</guid>
       <description></description>
     </item>
     
