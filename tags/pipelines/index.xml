@@ -5,7 +5,17 @@
     <link>https://www.andyroberts.nz/tags/pipelines/</link>
     <description>Recent content in pipelines on All Things Azure &amp; Cloud</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 10 Sep 2021 16:11:10 +1200</lastBuildDate><atom:link href="https://www.andyroberts.nz/tags/pipelines/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 23 Oct 2021 19:54:08 +1300</lastBuildDate><atom:link href="https://www.andyroberts.nz/tags/pipelines/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Control Azure Devops Pipelines with Powershell</title>
+      <link>https://www.andyroberts.nz/posts/azure-devops-pipelines-powershell/</link>
+      <pubDate>Sat, 23 Oct 2021 19:54:08 +1300</pubDate>
+      
+      <guid>https://www.andyroberts.nz/posts/azure-devops-pipelines-powershell/</guid>
+      <description>Pipelines in Azure DevOps are extremely useful and its something I used daily for Infrastructure Builds with Terraform on Azure and AWS. Normally these are triggered automatically as part of a pull request and merge to main, but there are times when you want to interact manually with them, such as starting or cancelling pipelines in bulk, and this is where this tip comes in handy.
+If you want to start/cancel a single pipeline, via the Azure DevOps portal is quick and easy.</description>
+    </item>
+    
     <item>
       <title>Azure Devops Pipelines - Could not get lock /var/lib/dpkg/lock-frontend</title>
       <link>https://www.andyroberts.nz/posts/azure-devops-lock/</link>

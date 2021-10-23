@@ -9,7 +9,7 @@
     <item>
       <title>azure</title>
       <link>https://www.andyroberts.nz/tags/azure/</link>
-      <pubDate>Fri, 10 Sep 2021 16:11:10 +1200</pubDate>
+      <pubDate>Sat, 23 Oct 2021 19:54:08 +1300</pubDate>
       
       <guid>https://www.andyroberts.nz/tags/azure/</guid>
       <description></description>
@@ -18,18 +18,36 @@
     <item>
       <title>azure devops</title>
       <link>https://www.andyroberts.nz/tags/azure-devops/</link>
-      <pubDate>Fri, 10 Sep 2021 16:11:10 +1200</pubDate>
+      <pubDate>Sat, 23 Oct 2021 19:54:08 +1300</pubDate>
       
       <guid>https://www.andyroberts.nz/tags/azure-devops/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>devops</title>
+      <link>https://www.andyroberts.nz/tags/devops/</link>
+      <pubDate>Sat, 23 Oct 2021 19:54:08 +1300</pubDate>
+      
+      <guid>https://www.andyroberts.nz/tags/devops/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>pipelines</title>
       <link>https://www.andyroberts.nz/tags/pipelines/</link>
-      <pubDate>Fri, 10 Sep 2021 16:11:10 +1200</pubDate>
+      <pubDate>Sat, 23 Oct 2021 19:54:08 +1300</pubDate>
       
       <guid>https://www.andyroberts.nz/tags/pipelines/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>powershell</title>
+      <link>https://www.andyroberts.nz/tags/powershell/</link>
+      <pubDate>Sat, 23 Oct 2021 19:54:08 +1300</pubDate>
+      
+      <guid>https://www.andyroberts.nz/tags/powershell/</guid>
       <description></description>
     </item>
     
@@ -75,15 +93,6 @@
       <pubDate>Thu, 29 Apr 2021 15:00:00 +1200</pubDate>
       
       <guid>https://www.andyroberts.nz/tags/azure-backup/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>powershell</title>
-      <link>https://www.andyroberts.nz/tags/powershell/</link>
-      <pubDate>Thu, 29 Apr 2021 15:00:00 +1200</pubDate>
-      
-      <guid>https://www.andyroberts.nz/tags/powershell/</guid>
       <description></description>
     </item>
     
