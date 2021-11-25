@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Azure SQL Elastic Pool Automatic Storage Scaling // All Things Azure &amp; Cloud</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.82.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Andy Roberts" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://www.andyroberts.nz/css/main.min.4a7ec8660f9a44b08c4da97c5f2e31b1192df1d4d0322e65c0dbbc6ecb1b863f.css" />
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SD58B2M7HG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-SD58B2M7HG', { 'anonymize_ip': false });
+}
+</script>
+
+    <meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://www.andyroberts.nz/blog_twitter_thumbnail.png"/>
+
+<meta name="twitter:title" content="Azure SQL Elastic Pool Automatic Storage Scaling"/>
+<meta name="twitter:description" content="Azure SQL Elastic Pools offer some great benefits for SQL Databases such as DTU based Performance and on-demand scaling up and down of compute/memory/storage via the Azure Portal. However, one thing that is not native out of the box, is scaling of storage on an elastic pool, in response to storage pressure. Recently I was exposed to this where an elastic pool reached its storage limit due to large amounts of data load happening, which caused the pool to run out of space and which would then quickly cause an outage as databases couldn&rsquo;t allocate anymore space."/>
+
+    <meta property="og:title" content="Azure SQL Elastic Pool Automatic Storage Scaling" />
+<meta property="og:description" content="Azure SQL Elastic Pools offer some great benefits for SQL Databases such as DTU based Performance and on-demand scaling up and down of compute/memory/storage via the Azure Portal. However, one thing that is not native out of the box, is scaling of storage on an elastic pool, in response to storage pressure. Recently I was exposed to this where an elastic pool reached its storage limit due to large amounts of data load happening, which caused the pool to run out of space and which would then quickly cause an outage as databases couldn&rsquo;t allocate anymore space." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.andyroberts.nz/posts/elastic-pool-scaling/" /><meta property="og:image" content="https://www.andyroberts.nz/blog_twitter_thumbnail.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-24T21:01:55&#43;13:00" />
+<meta property="article:modified_time" content="2021-11-24T21:01:55&#43;13:00" />
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://www.andyroberts.nz"><img class="app-header-avatar" src="/profile.jpg" alt="Andy Roberts" /></a>
+      <h1>All Things Azure &amp; Cloud</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">Home</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/posts/">Posts</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tags/">Tags</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/about/">About</a>
+      </nav>
+      <p>Azure &amp; All Things Cloud</p>
+      <div class="app-header-social">
+        
+          <a href="https://twitter.com/andyr2319" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>Twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg>
+          </a>
+        
+          <a href="https://www.linkedin.com/in/andy-roberts8939/" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>LinkedIn</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg>
+          </a>
+        
+          <a href="https://github.com/andyr8939" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>Github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+          </a>
+        
+          <a href="mailto:andyr8939@gmail.com" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-mail">
+  <title>email</title>
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Azure SQL Elastic Pool Automatic Storage Scaling</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Nov 24, 2021
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          8 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line>
+</svg>
+              <a class="tag" href="https://www.andyroberts.nz/tags/azure/">azure</a>
+              <a class="tag" href="https://www.andyroberts.nz/tags/sql/">sql</a>
+              <a class="tag" href="https://www.andyroberts.nz/tags/runbook/">runbook</a>
+              <a class="tag" href="https://www.andyroberts.nz/tags/powershell/">powershell</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>Azure SQL Elastic Pools offer some great benefits for SQL Databases such as DTU based Performance and on-demand scaling up and down of compute/memory/storage via the Azure Portal.  However, one thing that is not native out of the box, is scaling of storage on an elastic pool, in response to storage pressure.   Recently I was exposed to this where an elastic pool reached its storage limit due to large amounts of data load happening, which caused the pool to run out of space and which would then quickly cause an outage as databases couldn&rsquo;t allocate anymore space.</p>
+<p>So, lets fix that and create our own&hellip;.</p>
+<p>To do this, we are going to leverage a couple of Azure features</p>
+<ul>
+<li>Azure Monitor Alerts</li>
+<li>Azure Automation Accounts &amp; Runbooks</li>
+</ul>
+<h3 id="how-do-we-do-this">How do we do this?</h3>
+<p>What we want to happen is that when an Elastic Pool hits a certain limit of <strong>Data Space Allocated Percentage</strong> that an Azure Monitor Alert is triggered, which executes an Azure Automation Runbook, which runs some powershell to scale the elastic pool.   How I have structured this is the following.</p>
+<ol>
+<li>At 80% Data Space Allocated, send me an email but don&rsquo;t scale (so I get chance to validate it)</li>
+<li>At 90% Data Space Allocated, send me an email but this time scale the pool.</li>
+<li>At 95% Data Space Allocated, repeat the scale as before.  This is a safety net in case the pool grows very quickly.</li>
+</ol>
+<p>And part of this is also to have a hard limit of elastic pool size, so that I don&rsquo;t get a situation where runaway storage growth needs me to take out a loan to pay the bill.  All of this is easily doable with Azure Runbooks.</p>
+<h3 id="lets-test">Lets Test</h3>
+<p>You&rsquo;ll need some pre-reqs for this:</p>
+<ol>
+<li>Azure SQL Server</li>
+<li>Azure SQL Elastic Pool</li>
+<li>Azure Automation Account</li>
+</ol>
+<p>If you don&rsquo;t have these you can create some quickly with the below powershell, replacing the vars with what you want.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Install Pre-Req Modules</span>
+Install-Module Az.Resources, Az.Sql, Az.ManagedServiceIdentity, Az.Automation
+
+<span style="color:#75715e"># Define our variables</span>
+$location = <span style="color:#e6db74">&#34;australiaeast&#34;</span>
+$rsgName = <span style="color:#e6db74">&#34;myResourceGroup&#34;</span>
+$sqlServerName = <span style="color:#e6db74">&#34;mySQLServer&#34;</span>
+$sqlServeElasticPoolName = <span style="color:#e6db74">&#34;myElasticPool&#34;</span>
+$sqlServerUser = <span style="color:#e6db74">&#34;mysSQLAdminName&#34;</span>
+$sqlServerPass = <span style="color:#e6db74">&#34;SuperSecretPassword123!&#34;</span>
+$automationAccountName = <span style="color:#e6db74">&#34;myAutomationAccount&#34;</span>
+
+<span style="color:#75715e"># Create Resource Group</span>
+New-AzResourceGroup -Name $rsgName -Location $location
+
+<span style="color:#75715e"># Create our Credential Object</span>
+<span style="color:#66d9ef">[securestring]</span>$secStringPassword = ConvertTo-SecureString $sqlServerPass -AsPlainText -Force
+<span style="color:#66d9ef">[pscredential]</span>$sqlCreds = New-Object System.Management.Automation.PSCredential ($sqlServerUser, $secStringPassword)
+
+<span style="color:#75715e"># Create SQL Server and Elastic Pool</span>
+$sqlServer = New-AzSQLServer -ServerName $sqlServerName -ResourceGroupName $rsgName -Location $location -ServerVersion <span style="color:#e6db74">&#34;12.0&#34;</span> -SqlAdministratorCredentials $sqlCreds
+$sqlElasticPool = New-AzSqlElasticPool -ServerName $sqlServerName -ResourceGroupName $rsgName -ElasticPoolName $sqlServeElasticPoolName -Edition <span style="color:#e6db74">&#34;Standard&#34;</span> -Dtu 50 -DatabaseDtuMin 10 -DatabaseDtuMax 50 -StorageMB 51200
+
+<span style="color:#75715e"># Create Automation Account</span>
+New-AzAutomationAccount -Name $automationAccountName -ResourceGroupName $rsgName -Location $location -AssignSystemIdentity
+</code></pre></div><h3 id="create-your-azure-automation-runbook">Create your Azure Automation Runbook</h3>
+<p>Go to your Azure Automation Account, either an existing one or the one you created above, and create a Runbook.</p>
+<p><img src="/images/elasticpool-runbook-1.png" alt="create a runbook"></p>
+<p>Name it and ensure its running <strong>Powershell</strong> and <strong>5.1</strong></p>
+<p><img src="/images/elasticpool-runbook-2.png" alt="create a runbook"></p>
+<p>Once its created, open it and click <strong>Edit</strong> at the top, and then paste in the following Powershell Code.
+You can also get this from my <a href="https://github.com/andyr8939/azure/blob/main/scale-sql-elasticpool-storage.ps1">GitHub Repo here</a>.
+Once pasted in click <strong>Save</strong> and then <strong>Publish</strong>.  If you don&rsquo;t click Publish then the Runbook won&rsquo;t execute.</p>
+<p><img src="/images/elasticpool-runbook-3.png" alt="create a runbook"></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e">&lt;#
+</span><span style="color:#75715e">    </span><span style="color:#e6db74">.SYNOPSIS</span><span style="color:#75715e">
+</span><span style="color:#75715e">    Automatically grow the allocated storage of an Azure SQL Elastic Pool from an Azure Runbook
+</span><span style="color:#75715e">
+</span><span style="color:#75715e">    </span><span style="color:#e6db74">.DESCRIPTION</span><span style="color:#75715e">
+</span><span style="color:#75715e">    When executed from an Azure Monitor Runbook Trigger, this script will expand the elastic pool by
+</span><span style="color:#75715e">    its specified amount, up to a hard limit.
+</span><span style="color:#75715e">    It also won&#39;t scale if it doesn&#39;t meet a scaling threshold, initially defined as 85%
+</span><span style="color:#75715e">
+</span><span style="color:#75715e">    Created by Andy Roberts (andyr8939@gmail.com)
+</span><span style="color:#75715e">
+</span><span style="color:#75715e">    </span><span style="color:#e6db74">.PARAMETER</span><span style="color:#75715e"> WebhookData
+</span><span style="color:#75715e">    Raw data passed to the runbook from Azure Monitor
+</span><span style="color:#75715e">
+</span><span style="color:#75715e">    </span><span style="color:#e6db74">.PARAMETER</span><span style="color:#75715e"> poolIncreaseMB
+</span><span style="color:#75715e">    How much space to add to the pool on each scale event.  Initially set at 50 GB.
+</span><span style="color:#75715e">
+</span><span style="color:#75715e">    </span><span style="color:#e6db74">.PARAMETER</span><span style="color:#75715e"> poolIncreaseLimitMB
+</span><span style="color:#75715e">    A hard limit of how big the pool can increase too.  Initially set at 1 TB.
+</span><span style="color:#75715e">#&gt;</span>
+
+<span style="color:#66d9ef">param</span>
+(
+[<span style="color:#66d9ef">Parameter</span> (<span style="color:#66d9ef">Mandatory</span>=$false)]
+<span style="color:#66d9ef">[object]</span> $WebhookData,
+[<span style="color:#66d9ef">Parameter</span> (<span style="color:#66d9ef">Mandatory</span>= $false)]
+<span style="color:#66d9ef">[String]</span> $poolIncreaseMB = <span style="color:#e6db74">&#34;51200&#34;</span>, <span style="color:#75715e"># 50GB</span>
+[<span style="color:#66d9ef">Parameter</span> (<span style="color:#66d9ef">Mandatory</span>= $false)]
+<span style="color:#66d9ef">[String]</span> $poolIncreaseLimitMB = <span style="color:#e6db74">&#34;1048576&#34;</span> <span style="color:#75715e"># 1TB</span>
+)
+
+$connectionName = <span style="color:#e6db74">&#34;AzureRunAsConnection&#34;</span>
+<span style="color:#66d9ef">try</span>
+{
+    <span style="color:#75715e"># Get the connection &#34;AzureRunAsConnection &#34;</span>
+    $servicePrincipalConnection=Get-AutomationConnection -Name $connectionName         
+
+    <span style="color:#e6db74">&#34;Logging in to Azure...&#34;</span>
+    Connect-AzAccount `
+        -ServicePrincipal `
+        -TenantId $servicePrincipalConnection.TenantId `
+        -ApplicationId $servicePrincipalConnection.ApplicationId `
+        -CertificateThumbprint $servicePrincipalConnection.CertificateThumbprint 
+}
+<span style="color:#66d9ef">catch</span> {
+    <span style="color:#66d9ef">if</span> (!$servicePrincipalConnection)
+    {
+        $ErrorMessage = <span style="color:#e6db74">&#34;Connection $connectionName not found.&#34;</span>
+        <span style="color:#66d9ef">throw</span> $ErrorMessage
+    } <span style="color:#66d9ef">else</span>{
+        Write-Error -Message $_.Exception
+        <span style="color:#66d9ef">throw</span> $_.Exception
+    }
+}
+
+Write-Output <span style="color:#e6db74">&#34;This runbook was started from webhook $WebhookName.&#34;</span>
+<span style="color:#75715e"># Collect Webhook Data and convert to use with JSON</span>
+$WebhookBody = (ConvertFrom-Json -InputObject $WebhookData.RequestBody)
+
+<span style="color:#75715e"># Obtain the WebhookBody containing the AlertContext and any details we need</span>
+$AlertContext = <span style="color:#66d9ef">[object]</span> ($WebhookBody.data).context
+$SubId = $AlertContext.subscriptionId
+$ResourceGroupName = $AlertContext.resourceGroupName
+$ResourceType = $AlertContext.resourceType
+$ResourceName = $AlertContext.resourceName
+$status = ($WebhookBody.data).status
+$threshold = $WebhookBody.data.context.condition.allOf.threshold
+
+<span style="color:#75715e"># Write results to output for logging</span>
+Write-output <span style="color:#e6db74">&#34;Subscription - $SubId&#34;</span>
+Write-output <span style="color:#e6db74">&#34;RSG Name - $ResourceGroupName&#34;</span>
+Write-output <span style="color:#e6db74">&#34;Resource Type - $ResourceType&#34;</span>
+Write-output <span style="color:#e6db74">&#34;Resrouce Name - $ResourceName&#34;</span>
+Write-output <span style="color:#e6db74">&#34;Status - $status&#34;</span>
+Write-output <span style="color:#e6db74">&#34;Threshold - $threshold&#34;</span>
+
+<span style="color:#75715e"># Only scale if over 85% allocated, to give chance to manually clean up on earlier 80% trigger with just email</span>
+<span style="color:#66d9ef">if</span> ($threshold <span style="color:#f92672">-le</span> 85) {
+    Write-Output <span style="color:#e6db74">&#34;Threshold is $threshold which does not require scaling.  Email only sent.&#34;</span>
+    Write-Output <span style="color:#e6db74">&#34;Scaling Occurs once threshold is over 90%&#34;</span>
+    Exit   
+}
+
+<span style="color:#75715e"># As its over 85% threshold, prepare to scale</span>
+<span style="color:#75715e"># Get Resources for SQL and Elastic Pool</span>
+$sqlServer = Get-AzSqlServer -ResourceGroupName $ResourceGroupName
+$elasticPool = Get-AzSqlElasticPool -ElasticPoolName $ResourceName -ResourceGroupName $ResourceGroupName -ServerName $sqlserver.ServerName
+
+<span style="color:#75715e"># Add 50GB to the current size</span>
+$newElasticPoolStorageGB = $elasticpool.StorageMB + $poolIncreaseMB <span style="color:#75715e"># Add 50GB</span>
+
+<span style="color:#75715e"># Check new size and if it will exceed 1TB as a hard limit to prevent runaway scale</span>
+<span style="color:#66d9ef">if</span> ($newElasticPoolStorageGB <span style="color:#f92672">-ge</span> $poolIncreaseLimitMB) {
+    $failError = <span style="color:#e6db74">&#34;Elastic Pool Size for $ResourceName will exceed its allowed upper limit of </span>$($poolIncreaseLimitMB /1024)<span style="color:#e6db74"> GB so cannot scale&#34;</span>
+    Write-Output $failError
+    <span style="color:#66d9ef">throw</span> $failError
+}
+
+Write-Output <span style="color:#e6db74">&#34;Current Elastic Pool Size for $ResourceName is </span>$($elasticpool.StorageMB /1024)<span style="color:#e6db74"> GB&#34;</span>
+Write-Output <span style="color:#e6db74">&#34;Scaling Elastic Pool $ResourceName to </span>$($newElasticPoolStorageGB /1024)<span style="color:#e6db74"> GB&#34;</span>
+
+<span style="color:#75715e"># Scale Elastic Pool to new size</span>
+$elasticpool | Set-AzSqlElasticPool -StorageMB $newElasticPoolStorageGB
+
+Write-Output <span style="color:#e6db74">&#34;New Elastic Pool Size for $ResourceName is </span>$($newElasticPoolStorageGB /1024)<span style="color:#e6db74"> GB&#34;</span>
+</code></pre></div><p>Now you had added your Runbook, you need to ensure that the Automation Account knows about the AZ.Sql Module so it can actually run the powershell cmdlets in the runbook.</p>
+<p>In your Automation Account, select <strong>Modules</strong> and <strong>Add a Module</strong>.</p>
+<p><img src="/images/elasticpool-runbook-4a.png" alt="add module"></p>
+<p>Select <strong>Browse from Gallery</strong> and then click to Browse the Gallery.  A nice feature here is that you don&rsquo;t need to know the module name, just type the Powershell cmd you want and it will tell you the module.  So for example type in <strong>Get-AzSQLServer</strong> and it will show you the Az.Sql Module.  Select it and then when it comes back to the Add a Module screen, select <strong>5.1</strong> as the Runtime Version and <strong>Import</strong>.  This can take a few minutes but as we are finished here so you can move on.</p>
+<p><img src="/images/elasticpool-runbook-4b.png" alt="add module"></p>
+<h3 id="create-your-sql-elastic-pool-alert">Create your SQL Elastic Pool Alert</h3>
+<p>Now you have your Automation Runbook, its time to configure the Alert Rule.   Go to your SQL Elastic Pool, Alerts and then <strong>Create Alert Rule</strong>.</p>
+<p><img src="/images/elasticpool-runbook-5.png" alt="create an alert rule"></p>
+<p>The metric you want to monitor is <strong>Data Space Allocated Percent</strong>, and the values you use are up to you, but I like to create an initial one at 80%.   Also the period depends on your individual needs, but for a demo, I set it to 1 minute so it quickly notices the change.</p>
+<p><img src="/images/elasticpool-runbook-6.png" alt="alert rule"></p>
+<p>Next you need to crete an <strong>Action Group</strong>.  This is what you are going to action, surprisingly, so it&rsquo;s executing a runbook, triggering an email etc.  So give it a sample name.</p>
+<p><img src="/images/elasticpool-runbook-7.png" alt="action group"></p>
+<p>Under Action Type, select <strong>Automation Runbook</strong>.</p>
+<p><img src="/images/elasticpool-runbook-8.png" alt="action group"></p>
+<p>To find the Runbook you created earlier, change the <strong>Runbook Source</strong> to <strong>User</strong> and then find the Automation Account and Runbook you Created earlier.  You don&rsquo;t need to Configure Parameters at this stage, but if you wanted to add in custom policies like how many GB to scale and the upper limit, you can do this here.</p>
+<p><img src="/images/elasticpool-runbook-9.png" alt="action group runbook"></p>
+<p>I also like to add in additional actions here, such as sending myself an email when it happens, but this is totally up to you.</p>
+<p>Repeat all of the above <strong>Alert Rules</strong> for as many levels as you want.  I typically have rules trigger at 80%, 90% and 95%, but you will end up with a rule looking like this.</p>
+<p><img src="/images/elasticpool-runbook-10.png" alt="completed alert rule"></p>
+<h3 id="time-to-expand-that-pool">Time to expand that pool</h3>
+<p>Its now time to put this all together and see how it functions.  You&rsquo;ll need to add some data to your SQL Elastic Pool to push it over the threshold you set.  I like to use these <a href="https://www.brentozar.com/archive/2015/10/how-to-download-the-stack-overflow-database-via-bittorrent/">sample StackOverflow Databases</a> for this purpose but you can use whatever suits.</p>
+<h4 id="80-allocated---dont-grow">80% Allocated - Don&rsquo;t Grow</h4>
+<p>On my first run, I pushed Data Space Allocated to 80%.   The Alert Rule on the Elastic Pool triggered the Runbook (yey) but it didn&rsquo;t grown the pool.  This was because I had the threshold in the parameters set to only scale at 90%.  This is perfect, as my action group sent me an email so I can investigate if I need to.</p>
+<p><img src="/images/elasticpool-runbook-13.png" alt="no scale"></p>
+<h4 id="90-allocated---lets-grow">90% Allocated - Lets Grow</h4>
+<p>But for the demo perspective, lets assume it was valid and now it suddenly hits 90%.  So the 90% Alert Rule triggers the runbook again.</p>
+<p><img src="/images/elasticpool-runbook-14.png" alt="scale success"></p>
+<p>It works!  We can see above that the runbook saw the threshold from the alert was 90%, which was over my 85% threshold.  So because of that it knew it needed to scale and added 50 GB to the pool, meaning it was now 100 GB!</p>
+<h4 id="protect-with-a-limit">Protect with a limit</h4>
+<p>Like we put in earlier, we want a hard limit to stop run away growth of the pool.   To illustrate this here is an example where I changed my thresholds so it would hit the limit in one go.  This causes the runbook to throw an exception (as by default all runbooks will complete) and fail, highlighting the limit.</p>
+<p><img src="/images/elasticpool-runbook-17.png" alt="limit"></p>
+<p>That&rsquo;s all there is to it.  You can adjust and change that with thresholds to suit your needs really easily.  It was a fun one for me to do as it solved a fairly common problem and got me more familar with Azure Automation Runbooks at the same time.</p>
+<p>Andy</p>
+
+    </div>
+    <div class="post-footer">
+      <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "andyroberts-nz" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

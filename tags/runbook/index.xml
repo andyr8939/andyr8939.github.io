@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>sql on All Things Azure &amp; Cloud</title>
-    <link>https://www.andyroberts.nz/tags/sql/</link>
-    <description>Recent content in sql on All Things Azure &amp; Cloud</description>
+    <title>runbook on All Things Azure &amp; Cloud</title>
+    <link>https://www.andyroberts.nz/tags/runbook/</link>
+    <description>Recent content in runbook on All Things Azure &amp; Cloud</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Wed, 24 Nov 2021 21:01:55 +1300</lastBuildDate><atom:link href="https://www.andyroberts.nz/tags/sql/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 24 Nov 2021 21:01:55 +1300</lastBuildDate><atom:link href="https://www.andyroberts.nz/tags/runbook/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Azure SQL Elastic Pool Automatic Storage Scaling</title>
       <link>https://www.andyroberts.nz/posts/elastic-pool-scaling/</link>
@@ -13,16 +13,6 @@
       
       <guid>https://www.andyroberts.nz/posts/elastic-pool-scaling/</guid>
       <description>Azure SQL Elastic Pools offer some great benefits for SQL Databases such as DTU based Performance and on-demand scaling up and down of compute/memory/storage via the Azure Portal. However, one thing that is not native out of the box, is scaling of storage on an elastic pool, in response to storage pressure. Recently I was exposed to this where an elastic pool reached its storage limit due to large amounts of data load happening, which caused the pool to run out of space and which would then quickly cause an outage as databases couldn&amp;rsquo;t allocate anymore space.</description>
-    </item>
-    
-    <item>
-      <title>Azure Backups for Virtual Machines and SQL</title>
-      <link>https://www.andyroberts.nz/posts/azure-backup/</link>
-      <pubDate>Thu, 29 Apr 2021 15:00:00 +1200</pubDate>
-      
-      <guid>https://www.andyroberts.nz/posts/azure-backup/</guid>
-      <description>Backups are a necessity but it still amazes me the amount of companies I have worked at where you find backups are just not done, or just as bad, are done but are never checked!
-There are multiple ways to do backups depending where your data lives. Veeam, BackupExec, etc, but if you are running your infrastructure in Azure and you are using Virtual Machines then Azure Backup is an amazing tool for this.</description>
     </item>
     
   </channel>
