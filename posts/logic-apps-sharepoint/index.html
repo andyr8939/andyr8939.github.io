@@ -4,7 +4,7 @@
     <title>Azure Logic Apps for Application Gateway Reports // All Things Azure &amp; Cloud</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.82.0" />
+    <meta name="generator" content="Hugo 0.92.1" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="Andy Roberts" />
     <meta name="description" content="" />
@@ -34,8 +34,8 @@ In my current role we make heavy use of Azure Application Gateways which are L7 
 In my current role we make heavy use of Azure Application Gateways which are L7 HTTP(S) Load Balancers for our web front end. As the products we supply to clients are web based these are a perfect fit for our needs." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://www.andyroberts.nz/posts/logic-apps-sharepoint/" /><meta property="og:image" content="https://www.andyroberts.nz/blog_twitter_thumbnail.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-04-20T13:59:18&#43;12:00" />
-<meta property="article:modified_time" content="2021-04-20T13:59:18&#43;12:00" />
+<meta property="article:published_time" content="2021-04-20T13:59:18+12:00" />
+<meta property="article:modified_time" content="2021-04-20T13:59:18+12:00" />
 
 
 
@@ -56,7 +56,7 @@ In my current role we make heavy use of Azure Application Gateways which are L7 
           
           <a class="app-header-menu-item" href="/about/">About</a>
       </nav>
-      <p>Azure &amp; All Things Cloud</p>
+      <p>All Things Azure &amp; Cloud</p>
       <div class="app-header-social">
         
           <a href="https://twitter.com/andyr2319" target="_blank" rel="noreferrer noopener">
@@ -142,7 +142,7 @@ In my current role we make heavy use of Azure Application Gateways which are L7 
 <h3 id="run-query-and-list-results">Run query and list results</h3>
 <p>Add an Action for <strong>Azure Monitor Logs / Run query and list results</strong></p>
 <p>When you set this up the first time, you need to point it to your subscription, resource group and the log analytics workspace you are sending AppGW logs too.  In the Query, input your Kusto, which is below</p>
-<pre><code class="language-kusto" data-lang="kusto">// 500 to 599 Errors on Application Gateway Access Logs
+<pre tabindex="0"><code class="language-kusto" data-lang="kusto">// 500 to 599 Errors on Application Gateway Access Logs
 AzureDiagnostics
 | where ResourceType == &quot;APPLICATIONGATEWAYS&quot; and OperationName == &quot;ApplicationGatewayAccess&quot; and Resource == &quot;YOUR-APPGW-NAME-HERE&quot; and httpStatus_d between (500 .. 599)
 | project TimeGenerated, Category, Resource, httpStatus_d, requestUri_s, host_s, ruleName_s, clientIP_s, httpMethod_s, userAgent_s
@@ -162,7 +162,7 @@ AzureDiagnostics
 <p><img src="/images/logicapp-blog-5.png" alt="multi_logic_app"></p>
 <h3 id="waf-blocks-query">WAF Blocks Query</h3>
 <p>In this step you run a Kusto query to get all WAF records that are <strong>blocked</strong>.  We will then use this data in the next step to filter with.  Add an Action for <strong>Azure Monitor Logs / Run query and list results</strong> with the below query</p>
-<pre><code>// Block AppGW Requests
+<pre tabindex="0"><code>// Block AppGW Requests
 AzureDiagnostics
 | where ResourceProvider == &quot;MICROSOFT.NETWORK&quot; and Category == &quot;ApplicationGatewayFirewallLog&quot; and Resource == &quot;YOUR-APPGW-NAME-HERE&quot; 
 | where action_s contains &quot;Blocked&quot;
@@ -182,7 +182,7 @@ AzureDiagnostics
 <p><img src="/images/logicapp-blog-7.png" alt="multi_logic_app_foreach"></p>
 <h4 id="get-waf-records-to-match-transaction-id">Get WAF Records to Match Transaction ID</h4>
 <p>Add an Action for <strong>Control / For Each</strong> and in the output pick the <strong>value</strong> from the previous step.  You then create an extra action inside the For Each look for <strong>Azure Monitor Logs / Run query and list results</strong>.  Inside that run the below Kusto.</p>
-<pre><code>// AppGW Blocks with matching transactional ID matches
+<pre tabindex="0"><code>// AppGW Blocks with matching transactional ID matches
 AzureDiagnostics
 | where ResourceProvider == &quot;MICROSOFT.NETWORK&quot; and Category == &quot;ApplicationGatewayFirewallLog&quot; and Resource == &quot;YOUR-APPGW-NAME-HERE&quot; 
 | where transactionId_g contains &quot;@{items('For_each')?['transactionId_g']}&quot;
@@ -190,7 +190,7 @@ AzureDiagnostics
 </code></pre><p>Now inside that, where the <code>contains &quot;@{items('For_each')?['transactionId_g']}&quot;</code> part is, that is taking the dynamic content of the previous query where you got all the blocks, and getting all the WAF records for that.  This is going to give you matches and blocks!</p>
 <h4 id="parse-json">Parse JSON</h4>
 <p>You now been to parse the results of the query above, which comes out in JSON so you are able to extract the results for the for each loop.  Otherwise you don&rsquo;t get all the data coming through.  I used this formatting for the query earlier.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
     <span style="color:#f92672">&#34;items&#34;</span>: {
         <span style="color:#f92672">&#34;properties&#34;</span>: {
             <span style="color:#f92672">&#34;Category&#34;</span>: {

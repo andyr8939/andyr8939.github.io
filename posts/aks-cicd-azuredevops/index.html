@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Creating an AKS Release Pipeline in Azure DevOps // All Things Azure &amp; Cloud</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.92.1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Andy Roberts" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://www.andyroberts.nz/css/main.min.4a7ec8660f9a44b08c4da97c5f2e31b1192df1d4d0322e65c0dbbc6ecb1b863f.css" />
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SD58B2M7HG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-SD58B2M7HG', { 'anonymize_ip': false });
+}
+</script>
+
+    <meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://www.andyroberts.nz/blog_twitter_thumbnail.png"/>
+
+<meta name="twitter:title" content="Creating an AKS Release Pipeline in Azure DevOps"/>
+<meta name="twitter:description" content="AKS and Kubernetes in general is still fairly new to me, but its something I am using more and more every day. One of the challenges I have faced is that the more I have to deploy to is, is the need for a simple way to deploy a set of apps you need on every cluster, that doesn&rsquo;t involve a complicated solution. I am an &lsquo;Ops&rsquo; guy by trade so creating release artifacts and NuGet packages doesn&rsquo;t come naturally too me."/>
+
+    <meta property="og:title" content="Creating an AKS Release Pipeline in Azure DevOps" />
+<meta property="og:description" content="AKS and Kubernetes in general is still fairly new to me, but its something I am using more and more every day. One of the challenges I have faced is that the more I have to deploy to is, is the need for a simple way to deploy a set of apps you need on every cluster, that doesn&rsquo;t involve a complicated solution. I am an &lsquo;Ops&rsquo; guy by trade so creating release artifacts and NuGet packages doesn&rsquo;t come naturally too me." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.andyroberts.nz/posts/aks-cicd-azuredevops/" /><meta property="og:image" content="https://www.andyroberts.nz/blog_twitter_thumbnail.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-31T21:36:09+13:00" />
+<meta property="article:modified_time" content="2022-01-31T21:36:09+13:00" />
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://www.andyroberts.nz"><img class="app-header-avatar" src="/profile.jpg" alt="Andy Roberts" /></a>
+      <h1>All Things Azure &amp; Cloud</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">Home</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/posts/">Posts</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tags/">Tags</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/about/">About</a>
+      </nav>
+      <p>All Things Azure &amp; Cloud</p>
+      <div class="app-header-social">
+        
+          <a href="https://twitter.com/andyr2319" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>Twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg>
+          </a>
+        
+          <a href="https://www.linkedin.com/in/andy-roberts8939/" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>LinkedIn</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg>
+          </a>
+        
+          <a href="https://github.com/andyr8939" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>Github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+          </a>
+        
+          <a href="mailto:andyr8939@gmail.com" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-mail">
+  <title>email</title>
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Creating an AKS Release Pipeline in Azure DevOps</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Jan 31, 2022
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          6 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line>
+</svg>
+              <a class="tag" href="https://www.andyroberts.nz/tags/azure/">azure</a>
+              <a class="tag" href="https://www.andyroberts.nz/tags/pipelines/">pipelines</a>
+              <a class="tag" href="https://www.andyroberts.nz/tags/kubernetes/">kubernetes</a>
+              <a class="tag" href="https://www.andyroberts.nz/tags/aks/">aks</a>
+              <a class="tag" href="https://www.andyroberts.nz/tags/devops/">devops</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>AKS and Kubernetes in general is still fairly new to me, but its something I am using more and more every day.  One of the challenges I have faced is that the more I have to deploy to is, is the need for a simple way to deploy a set of apps you need on every cluster, that doesn&rsquo;t involve a complicated solution.  I am an &lsquo;Ops&rsquo; guy by trade so creating release artifacts and NuGet packages doesn&rsquo;t come naturally too me.  Instead I like to keep things as simple as possible, and one way I have found to do this is using Release Pipelines in Azure DevOps in a GitOps style process, so this is what I&rsquo;ll explain below.</p>
+<h2 id="create-some-aks-clusters">Create some AKS Clusters</h2>
+<p>You are going to need a few clusters for this.  I currently have 12 I need to run this on across multiple regions and environments, but for this demo, lets stick to 3 clusters which we can call, dev, stage and prod.</p>
+<p>To quick create some you can run the following Azure CLI.</p>
+<p>You can also find the script and all the YAML Kubernetes files for this blog here <a href="https://github.com/andyr8939/azure/tree/main/aks">on my GitHub</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">SUBSCRIPTION<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;your-subscription-name&#34;</span>
+RSG_NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;aks-release-demo&#34;</span>
+LOCATION<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;australiaeast&#34;</span>
+
+az account set --subscription $SUBSCRIPTION
+
+az group create --name $RSG_NAME --location $LOCATION
+
+az aks create --name <span style="color:#e6db74">&#34;prod-cluster&#34;</span> --resource-group $RSG_NAME --location $LOCATION --node-count <span style="color:#ae81ff">1</span> --enable-addons monitoring --generate-ssh-keys
+
+az aks create --name <span style="color:#e6db74">&#34;stage-cluster&#34;</span> --resource-group $RSG_NAME --location $LOCATION --node-count <span style="color:#ae81ff">1</span> --enable-addons monitoring --generate-ssh-keys
+
+az aks create --name <span style="color:#e6db74">&#34;dev-cluster&#34;</span> --resource-group $RSG_NAME --location $LOCATION --node-count <span style="color:#ae81ff">1</span> --enable-addons monitoring --generate-ssh-keys
+
+</code></pre></div><p>Give that 10-20 minutes and you&rsquo;ll have 3x basic AKS clusters ready to use.</p>
+<h2 id="azure-devops-service-connections">Azure DevOps Service Connections</h2>
+<p>A Service Connection in Azure DevOps is a way to integrate with your third party services, like Kubernetes, GitHub, Jenkins etc.</p>
+<ol>
+<li>Inside your Azure DevOps Project go to <strong>Settings</strong> and <strong>Service Connections</strong> and <strong>Create Service Connection</strong>
+<img src="/images/aks-cicd-1.png" alt="service_connection"></li>
+<li>Select <strong>Kubernetes</strong> and select <strong>Azure Subscription</strong>.</li>
+</ol>
+<ul>
+<li>From the dropdown pick your subscription where you deployed the AKS clusters, then select the first cluster, dev-cluster in this case.</li>
+<li>Namespace you can leave as default as we override this when deploying, but make sure that <strong>Use Cluster Admin Credentials</strong> is checked.  If you don&rsquo;t then you get errors with deploying to anything but the namespace you specify.</li>
+<li>Name the connection <strong>dev-cluster</strong> and grant access to all pipelines, and Save.</li>
+</ul>
+<p><img src="/images/aks-cicd-2.png" alt="service_connection_setup"></p>
+<ol start="4">
+<li>Repeat the above for your stage and prod clusters, so you end up with 3 separate connections like this.
+<img src="/images/aks-cicd-3.png" alt="service_connections"></li>
+</ol>
+<h2 id="create-a-release-pipeline">Create a Release Pipeline</h2>
+<ol>
+<li>From Pipelines / Releases, select <strong>New Pipeline</strong>
+<img src="/images/aks-cicd-4.png" alt="pipeline_setup"></li>
+<li>Start with an <strong>Empty Job</strong>
+<img src="/images/aks-cicd-5.png" alt="pipeline_setup_job"></li>
+<li>You now create a Stage, so call the first one <strong>Dev</strong>
+<img src="/images/aks-cicd-6.png" alt="pipeline_setup_step"></li>
+<li>Now to deploy anything you need some code.  For this example I am just going to deploy some basic nginx and whoami apps that I have created some Kubernetes manifest files for.  Select <strong>Add</strong> in the Artifact pane.
+<img src="/images/aks-cicd-7.png" alt="pipeline_setup_artifact"></li>
+<li>My code is all in Azure DevOps for this demo, so I have selected my Project (AKS), Source Repo (cicd-blog) and the branch.  If you are using GitHub or other this is totally fine, just fill out the relevant details.  If you want to use the same files as me, you can grab them <a href="https://github.com/andyr8939/azure/tree/main/aks">here on my GitHub</a>
+<img src="/images/aks-cicd-8.png" alt="pipeline_setup_repo"></li>
+<li>Next you need to add a task, to tell the pipeline to do something, so select the task link.
+<img src="/images/aks-cicd-9.png" alt="pipeline_setup_task"></li>
+<li>A few things need to happen in this step, because you are going to be using build agents.  The first of which is ensuring <strong>kubectl</strong> is installed so you can execute commands against the cluster.  So search for <strong>kubectl</strong> in the <strong>Add Tasks</strong> pane and select <strong>Kubectl tool installer</strong> and Add that.
+<img src="/images/aks-cicd-10.png" alt="pipeline_setup_task_kubectl"></li>
+<li>Add another task and this time just select <strong>Kubectl</strong> and Add.
+<img src="/images/aks-cicd-11.png" alt="pipeline_setup_task_kubectl"></li>
+<li>This is where you configure the meat of the deployment.</li>
+</ol>
+<ul>
+<li>Give your deployment a name (NGINX Deploy)</li>
+<li>Select your Kubernetes Service Connection you created earlier and chose the <strong>dev-cluster</strong></li>
+<li>Leave namespace blank, as this is created by the manifest file.</li>
+<li>For command, pick <strong>apply</strong> and then select <strong>Use Configuration</strong>.  This will give us some extra options.</li>
+<li>File Path is what you want here and you can navigate through your repo to find the deployment file you want.  If you have more than one file, you can select the entire folder if that helps.
+<img src="/images/aks-cicd-12.png" alt="pipeline_setup_task_kubectl_details"></li>
+</ul>
+<ol start="10">
+<li>One thing I like to do as well, is change the Agent Job to use ubuntu-latest, as I find in my region (I live in NZ but use Australia East) that ubuntu starts up much faster than windows agents.
+<img src="/images/aks-cicd-13.png" alt="pipeline_agents"></li>
+<li>At this stage you can add more deploy steps if you like.  On the screenshot above I have created another <strong>WhoAmI</strong> deployment but this is totally optional.</li>
+<li><strong>Save</strong> your Pipeline and then click <strong>Create Release</strong>
+<img src="/images/aks-cicd-14.png" alt="pipeline_release"></li>
+<li>At this point you only have 1 stage, so can just click <strong>Create</strong>
+<img src="/images/aks-cicd-15.png" alt="pipeline_release_new"></li>
+</ol>
+<p>Everything happens quite quick at this point.   The release will be processed so the pipeline pulls down the code you specified in the Artifacts section, then runs through your steps and deploys the manifest to the cluster.  In my example this took around 20 seconds for the whole thing, and you can see below a completed release, and the nginx and whoami pods running on my Dev AKS Cluster!
+<img src="/images/aks-cicd-16.png" alt="pipeline_release_done"></p>
+<h2 id="add-more-stages-for-stage-and-prod">Add More Stages for Stage and Prod</h2>
+<p>It wouldn&rsquo;t be a release pipeline if you didn&rsquo;t take the release through to Production, so lets do that :)</p>
+<ol>
+<li>Edit your Pipeline
+<img src="/images/aks-cicd-17.png" alt="pipeline_extra_1"></li>
+<li>Click on the <strong>Clone</strong> button and this clones that stage to a fresh one.
+<img src="/images/aks-cicd-18.png" alt="pipeline_extra_2"></li>
+<li>Edit the task on the new stage and change the <strong>Service Connection</strong> on each stage from your <strong>dev-cluster</strong> to the <strong>stage-cluster</strong>.  Also rename your cloned stage to Stage and then save.</li>
+<li>Repeat that for the prod-cluster stage so they look like below.
+<img src="/images/aks-cicd-19.png" alt="pipeline_extra_3"></li>
+<li>Save the Pipeline and come back out so you can see all of your stages.</li>
+<li><strong><strong>Optional</strong></strong> - You might want to have an approval for your Production stage, so for example you auto deploy to all None-Prod, but then want to pause for manual approval for Production, to avoid introducing a breaking change all the way through.  To do this, click on the <strong>Pre Deployment Conditions</strong> icon at the start of the Prod Stage.</li>
+<li>Enable the Pre Deployment Approvals and put yourself as the approver.  In real production you would have others, but this works for this demo.
+<img src="/images/aks-cicd-20.png" alt="pipeline_extra_4"></li>
+<li>Save the pipeline and create a new release.</li>
+</ol>
+<h2 id="seeing-it-all-in-motion">Seeing it all in motion</h2>
+<p>This all happens quite quickly if you only have a really simple webapp to deploy, like I am doing for this demo.  But once you create the release you will see the process flow through, deploying first to the dev-cluster, then to stage-cluster and finally <strong>pausing</strong> before it goes to the prod-cluster.</p>
+<p><img src="/images/aks-cicd-21.png" alt="pipeline_done"></p>
+<p>That&rsquo;s it.  Congratulations, you have created a release pipeline with continuous integration, so now whenever you make a commit on the main branch you specified in the artifacts section, the release pipeline will run and apply all those manifests.  If there are no changes, then kubectl will see that and not change anything.  If there are changes, it will apply them, to always match you code base, which is the basis of a GitOps flow like this.</p>
+<p>I hope this has helped as a simple overview to release pipelines with AKS.</p>
+<p>Andy</p>
+
+    </div>
+    <div class="post-footer">
+      <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "andyroberts-nz" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

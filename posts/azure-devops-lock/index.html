@@ -4,7 +4,7 @@
     <title>Azure Devops Pipelines - Could not get lock /var/lib/dpkg/lock-frontend // All Things Azure &amp; Cloud</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.82.0" />
+    <meta name="generator" content="Hugo 0.92.1" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="Andy Roberts" />
     <meta name="description" content="" />
@@ -34,8 +34,8 @@ E: Could not get lock /var/lib/dpkg/lock-frontend - open (11: Resource temporari
 E: Could not get lock /var/lib/dpkg/lock-frontend - open (11: Resource temporarily unavailable) E: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), is another process using it?" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://www.andyroberts.nz/posts/azure-devops-lock/" /><meta property="og:image" content="https://www.andyroberts.nz/blog_twitter_thumbnail.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-09-10T16:11:10&#43;12:00" />
-<meta property="article:modified_time" content="2021-09-10T16:11:10&#43;12:00" />
+<meta property="article:published_time" content="2021-09-10T16:11:10+12:00" />
+<meta property="article:modified_time" content="2021-09-10T16:11:10+12:00" />
 
 
 
@@ -56,7 +56,7 @@ E: Could not get lock /var/lib/dpkg/lock-frontend - open (11: Resource temporari
           
           <a class="app-header-menu-item" href="/about/">About</a>
       </nav>
-      <p>Azure &amp; All Things Cloud</p>
+      <p>All Things Azure &amp; Cloud</p>
       <div class="app-header-social">
         
           <a href="https://twitter.com/andyr2319" target="_blank" rel="noreferrer noopener">
@@ -122,7 +122,7 @@ E: Could not get lock /var/lib/dpkg/lock-frontend - open (11: Resource temporari
     </header>
     <div class="post-content">
       <p>I&rsquo;ve been using Azure DevOps Pipelines to build our Azure Infrastructure with Terraform for nearly 9 months now and its been pretty much rock solid.  However, this week all of a sudden my pipelines started failing if I ran more than 1 build at a time, and all gave this error.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">E: Could not get lock /var/lib/dpkg/lock-frontend - open <span style="color:#f92672">(</span>11: Resource temporarily unavailable<span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">E: Could not get lock /var/lib/dpkg/lock-frontend - open <span style="color:#f92672">(</span>11: Resource temporarily unavailable<span style="color:#f92672">)</span>
 E: Unable to acquire the dpkg frontend lock <span style="color:#f92672">(</span>/var/lib/dpkg/lock-frontend<span style="color:#f92672">)</span>, is another process using it?
 </code></pre></div><p><img src="/images/pipeline-lock-1.png" alt="failed_pipeline_1"></p>
 <p>This was happening at the part of the pipeline where I install some dependencies I need on the ubuntu agent, mainly <em>jq, unzip, zip</em> etc.  It was only happening when I ran multiple pipelines at once, so my self hosted VM Scale Sets agents ramped up.  If it was a single deployment it was fine.</p>
@@ -131,7 +131,7 @@ E: Unable to acquire the dpkg frontend lock <span style="color:#f92672">(</span>
 <h2 id="solution">Solution</h2>
 <p>It turned out to be fairly simple.  When the VM Scale Set Instance was starting, something which I think was the Azure DevOps Extension, was using apt-get to get updates, which meant my dependency section couldn&rsquo;t run apt-get due to the lock and crashed out.</p>
 <p>To fix it I added in a wait loop to my dependencies section in the pipeline with the below.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># Install dependencies in the agent pool server</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># Install dependencies in the agent pool server</span>
 - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
   <span style="color:#f92672">inputs</span>:
     <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>

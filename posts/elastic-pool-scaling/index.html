@@ -4,7 +4,7 @@
     <title>Azure SQL Elastic Pool Automatic Storage Scaling // All Things Azure &amp; Cloud</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.82.0" />
+    <meta name="generator" content="Hugo 0.92.1" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="Andy Roberts" />
     <meta name="description" content="" />
@@ -32,8 +32,8 @@ if (!doNotTrack) {
 <meta property="og:description" content="Azure SQL Elastic Pools offer some great benefits for SQL Databases such as DTU based Performance and on-demand scaling up and down of compute/memory/storage via the Azure Portal. However, one thing that is not native out of the box, is scaling of storage on an elastic pool, in response to storage pressure. Recently I was exposed to this where an elastic pool reached its storage limit due to large amounts of data load happening, which caused the pool to run out of space and which would then quickly cause an outage as databases couldn&rsquo;t allocate anymore space." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://www.andyroberts.nz/posts/elastic-pool-scaling/" /><meta property="og:image" content="https://www.andyroberts.nz/blog_twitter_thumbnail.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-11-24T21:01:55&#43;13:00" />
-<meta property="article:modified_time" content="2021-11-24T21:01:55&#43;13:00" />
+<meta property="article:published_time" content="2021-11-24T21:01:55+13:00" />
+<meta property="article:modified_time" content="2021-11-24T21:01:55+13:00" />
 
 
 
@@ -54,7 +54,7 @@ if (!doNotTrack) {
           
           <a class="app-header-menu-item" href="/about/">About</a>
       </nav>
-      <p>Azure &amp; All Things Cloud</p>
+      <p>All Things Azure &amp; Cloud</p>
       <div class="app-header-social">
         
           <a href="https://twitter.com/andyr2319" target="_blank" rel="noreferrer noopener">
@@ -143,7 +143,7 @@ if (!doNotTrack) {
 <li>Azure Automation Account</li>
 </ol>
 <p>If you don&rsquo;t have these you can create some quickly with the below powershell, replacing the vars with what you want.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Install Pre-Req Modules</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Install Pre-Req Modules</span>
 Install-Module Az.Resources, Az.Sql, Az.ManagedServiceIdentity, Az.Automation
 
 <span style="color:#75715e"># Define our variables</span>
@@ -177,7 +177,7 @@ New-AzAutomationAccount -Name $automationAccountName -ResourceGroupName $rsgName
 You can also get this from my <a href="https://github.com/andyr8939/azure/blob/main/scale-sql-elasticpool-storage.ps1">GitHub Repo here</a>.
 Once pasted in click <strong>Save</strong> and then <strong>Publish</strong>.  If you don&rsquo;t click Publish then the Runbook won&rsquo;t execute.</p>
 <p><img src="/images/elasticpool-runbook-3.png" alt="create a runbook"></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e">&lt;#
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e">&lt;#
 </span><span style="color:#75715e">    </span><span style="color:#e6db74">.SYNOPSIS</span><span style="color:#75715e">
 </span><span style="color:#75715e">    Automatically grow the allocated storage of an Azure SQL Elastic Pool from an Azure Runbook
 </span><span style="color:#75715e">

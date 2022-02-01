@@ -4,7 +4,7 @@
     <title>Control Azure Devops Pipelines with Powershell // All Things Azure &amp; Cloud</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.82.0" />
+    <meta name="generator" content="Hugo 0.92.1" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="Andy Roberts" />
     <meta name="description" content="" />
@@ -34,8 +34,8 @@ If you want to start/cancel a single pipeline, via the Azure DevOps portal is qu
 If you want to start/cancel a single pipeline, via the Azure DevOps portal is quick and easy." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://www.andyroberts.nz/posts/azure-devops-pipelines-powershell/" /><meta property="og:image" content="https://www.andyroberts.nz/blog_twitter_thumbnail.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-10-23T19:54:08&#43;13:00" />
-<meta property="article:modified_time" content="2021-10-23T19:54:08&#43;13:00" />
+<meta property="article:published_time" content="2021-10-23T19:54:08+13:00" />
+<meta property="article:modified_time" content="2021-10-23T19:54:08+13:00" />
 
 
 
@@ -56,7 +56,7 @@ If you want to start/cancel a single pipeline, via the Azure DevOps portal is qu
           
           <a class="app-header-menu-item" href="/about/">About</a>
       </nav>
-      <p>Azure &amp; All Things Cloud</p>
+      <p>All Things Azure &amp; Cloud</p>
       <div class="app-header-social">
         
           <a href="https://twitter.com/andyr2319" target="_blank" rel="noreferrer noopener">
@@ -132,7 +132,7 @@ If you want to start/cancel a single pipeline, via the Azure DevOps portal is qu
 <li>Get all your pending pipelines</li>
 <li>Cycle through them and cancel each one</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">  <span style="color:#75715e"># Replace the values in this for the variables with your own.</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">  <span style="color:#75715e"># Replace the values in this for the variables with your own.</span>
   $myDevOpsPAT = <span style="color:#e6db74">&#34;123456789abcedfghijklmnopqrstuvwxyz&#34;</span>
   $myDevOpsOrganization = <span style="color:#e6db74">&#34;StarkIndustries&#34;</span>
   $myDevOpsProjectName = <span style="color:#e6db74">&#34;ArcReactorProject&#34;</span>
@@ -157,7 +157,7 @@ If you want to start/cancel a single pipeline, via the Azure DevOps portal is qu
   }
 </code></pre></div><h2 id="starting-multiple-pipelines">Starting Multiple Pipelines</h2>
 <p>The reverse of that is starting multiple pipelines.   An example I use this all the time is triggering specific pipelines for Terraform.   So say I have 300 pipelines and I only want to trigger all my pipelines that have <strong>Network</strong> in the title, I would run a powershell select statement to filter out what I want and then post this to a slightly different url like below.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">  <span style="color:#75715e"># Replace the values in this for the variables with your own.</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">  <span style="color:#75715e"># Replace the values in this for the variables with your own.</span>
   $myDevOpsPAT = <span style="color:#e6db74">&#34;123456789abcedfghijklmnopqrstuvwxyz&#34;</span>
   $myDevOpsOrganization = <span style="color:#e6db74">&#34;StarkIndustries&#34;</span>
   $myDevOpsProjectName = <span style="color:#e6db74">&#34;ArcReactorProject&#34;</span>

@@ -4,7 +4,7 @@
     <title>Azure Backups for Virtual Machines and SQL // All Things Azure &amp; Cloud</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.82.0" />
+    <meta name="generator" content="Hugo 0.92.1" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="Andy Roberts" />
     <meta name="description" content="" />
@@ -34,8 +34,8 @@ There are multiple ways to do backups depending where your data lives. Veeam, Ba
 There are multiple ways to do backups depending where your data lives. Veeam, BackupExec, etc, but if you are running your infrastructure in Azure and you are using Virtual Machines then Azure Backup is an amazing tool for this." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://www.andyroberts.nz/posts/azure-backup/" /><meta property="og:image" content="https://www.andyroberts.nz/blog_twitter_thumbnail.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-04-29T15:00:00&#43;12:00" />
-<meta property="article:modified_time" content="2021-04-29T15:00:00&#43;12:00" />
+<meta property="article:published_time" content="2021-04-29T15:00:00+12:00" />
+<meta property="article:modified_time" content="2021-04-29T15:00:00+12:00" />
 
 
 
@@ -56,7 +56,7 @@ There are multiple ways to do backups depending where your data lives. Veeam, Ba
           
           <a class="app-header-menu-item" href="/about/">About</a>
       </nav>
-      <p>Azure &amp; All Things Cloud</p>
+      <p>All Things Azure &amp; Cloud</p>
       <div class="app-header-social">
         
           <a href="https://twitter.com/andyr2319" target="_blank" rel="noreferrer noopener">
@@ -135,7 +135,7 @@ There are multiple ways to do backups depending where your data lives. Veeam, Ba
 </ol>
 <h2 id="initial-variable">Initial Variable</h2>
 <p>These are set at the top of the script and include subscription details, resource group name, the backup time you want to execute at etc.  I put everything at the top like this so you can just edit one section and that it, plus you can also then have these variables replaced in any other automation (Octopus Deploy) or CI/CD process (Azure DevOps Pipeline) you use to make this even more streamlined.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e">########################################################################################</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e">########################################################################################</span>
 <span style="color:#75715e">## Connection Details</span>
 $mySubscription = <span style="color:#e6db74">&#34;123456789-1234-1234-1234-123456789&#34;</span>
 $myLocation = <span style="color:#e6db74">&#34;australiaeast&#34;</span>
@@ -178,7 +178,7 @@ $sqlLogBackupFrequencyMins = <span style="color:#e6db74">&#34;120&#34;</span> <s
 <p>Once you have populated those details, that really is it.  You can then run the script and it will set everything up for you, but for an explanation of whats happening lets break it down.</p>
 <h3 id="script-breakdown">Script Breakdown</h3>
 <p>The first part of executing the script connects to your Azure Account, gets the VMs in your Resource Group and then sets up the Recovery Services Vault which is where all your backups will be held.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Set Azure Context</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Set Azure Context</span>
 Set-AzContext -SubscriptionId $mySubscription
 
 <span style="color:#75715e"># Get a list of all VMs in the Resource Group</span>
@@ -200,7 +200,7 @@ Get-AzRecoveryServicesVault -Name $myBackupVaultName -ResourceGroupName $myRSG |
 <span style="color:#75715e"># Get vault ID</span>
 $targetVault = Get-AzRecoveryServicesVault -ResourceGroupName $myRSG -Name $myBackupVaultName
 </code></pre></div><p>After this we will setup the VM Backup Policy with the schedules we specified in the earlier variables.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Set Values for the Protection Policy</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Set Values for the Protection Policy</span>
 $myBackupPolicyName = $myBackupPolicyName
 $schPol = Get-AzRecoveryServicesBackupSchedulePolicyObject -WorkloadType <span style="color:#e6db74">&#34;AzureVM&#34;</span>
 $UtcTime = $myBackupTime.ToUniversalTime()
@@ -221,7 +221,7 @@ $retPol.YearlySchedule.MonthsOfYear = $YearlyMonth
 $pol = Get-AzRecoveryServicesBackupProtectionPolicy -Name $myBackupPolicyName
 Set-AzRecoveryServicesBackupProtectionPolicy -RetentionPolicy $RetPol -Policy $pol -SchedulePolicy $schPol
 </code></pre></div><p>And now we will iterate through each of the VMs you have running in the resource group and enable them for backup with the policy we just created.  This part can vary depending on how many VMs you have, but I&rsquo;ve seen it take 2-3mins per VM as a baseline.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#66d9ef">foreach</span> ($vm <span style="color:#66d9ef">in</span> $VMs) {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#66d9ef">foreach</span> ($vm <span style="color:#66d9ef">in</span> $VMs) {
     $pol = Get-AzRecoveryServicesBackupProtectionPolicy -Name $myBackupPolicyName
     Enable-AzRecoveryServicesBackupProtection -Policy $pol -Name $vm.Name -ResourceGroupName $myRSG
 }
@@ -229,7 +229,7 @@ Set-AzRecoveryServicesBackupProtectionPolicy -RetentionPolicy $RetPol -Policy $p
 <h3 id="backing-up-azure-sql-in-vm">Backing up Azure SQL in VM</h3>
 <p>The script will also continue if you have SQL Server running in a VM.  Even with the popularity of Azure SQL and SQL Managed Instances, I still come across a lot of companies using SQL in a VM due to legacy app requirements, so its important to capture this.</p>
 <p>First it will create the SQL backup policy, enabling Log backups if you set it earlier in the variables, and likewise doing daily differentials.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$sqlschPol = Get-AzRecoveryServicesBackupSchedulePolicyObject -WorkloadType <span style="color:#e6db74">&#34;MSSQL&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$sqlschPol = Get-AzRecoveryServicesBackupSchedulePolicyObject -WorkloadType <span style="color:#e6db74">&#34;MSSQL&#34;</span>
 $sqlretPol = Get-AzRecoveryServicesBackupRetentionPolicyObject -WorkloadType <span style="color:#e6db74">&#34;MSSQL&#34;</span>
 $SQLmyBackupTime = ($myBackupTime).AddHours(3) <span style="color:#75715e"># Set to 3hr after the backup job time</span>
 $sqlUtcTime = $SQLmyBackupTime.ToUniversalTime()
@@ -272,7 +272,7 @@ $sqlretPol.LogBackupRetentionPolicy.RetentionDurationType = $sqlLogRetentionCycl
 <span style="color:#75715e"># Create the SQL Backup Job</span>
 $NewSQLPolicy = New-AzRecoveryServicesBackupProtectionPolicy -Name $mySQLBackupPolicyName -WorkloadType <span style="color:#e6db74">&#34;MSSQL&#34;</span> -RetentionPolicy $sqlretPol -SchedulePolicy $sqlschPol -Verbose
 </code></pre></div><p>Next we get all the VMs that are running SQL.  Depending on our environment you could look for VM image type or extensions installed, but for me it was enough to simply find all VMs with <em>sql</em> in the name.   Then once we have these we create a null config for the SQL IaaS Backup Extension to avoid conflicts and then disable it on each VM by applying the null config.  A null config is used to avoid changing other settings on the IaaS extension.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Get SQL VMs</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Get SQL VMs</span>
 $sqlvms = Get-AzVM -ResourceGroupName $myRSG -Name *sql*
 
 <span style="color:#75715e"># Register VMs with SQL on against the backup container</span>
@@ -286,7 +286,7 @@ $autobackupconfig = New-AzVMSqlServerAutoBackupConfig -ResourceGroupName $myRSG
     Set-AzVMSqlServerExtension -AutoBackupSettings $autobackupconfig -VMName $vm.Name -ResourceGroupName $myRSG -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
 }
 </code></pre></div><p>Finally you will enable backup on all SQL VMs, take a backup of each DB, and most importantly enable auto protection for future DBs.  If you didnt turn this on and added another database later on, it wouldn&rsquo;t automatically be backed up.  But enabling auto protection the backup agent will rescan the server every 8 hours and add any missing databases in.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Get all protectable SQL DBs found in the vault that can be backed up</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Get all protectable SQL DBs found in the vault that can be backed up</span>
 $SQLDB = Get-AzRecoveryServicesBackupProtectableItem -WorkloadType MSSQL -VaultId $targetVault.ID
 
 <span style="color:#75715e"># Enable backups on all DBs not already set to backup</span>
