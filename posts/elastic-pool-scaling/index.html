@@ -1,14 +1,15 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title>Azure SQL Elastic Pool Automatic Storage Scaling // All Things Azure &amp; Cloud</title>
+    <title>Azure SQL Elastic Pool Automatic Storage Scaling // Andy Roberts</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.92.1" />
+    <meta name="generator" content="Hugo 0.100.2" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="Andy Roberts" />
     <meta name="description" content="" />
     <link rel="stylesheet" href="https://www.andyroberts.nz/css/main.min.4a7ec8660f9a44b08c4da97c5f2e31b1192df1d4d0322e65c0dbbc6ecb1b863f.css" />
+
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-SD58B2M7HG"></script>
 <script>
@@ -40,7 +41,7 @@ if (!doNotTrack) {
   <body>
     <header class="app-header">
       <a href="https://www.andyroberts.nz"><img class="app-header-avatar" src="/profile.jpg" alt="Andy Roberts" /></a>
-      <h1>All Things Azure &amp; Cloud</h1>
+      <h1>Andy Roberts</h1>
       <nav class="app-header-menu">
           <a class="app-header-menu-item" href="/">Home</a>
              - 
@@ -52,8 +53,11 @@ if (!doNotTrack) {
              - 
           
           <a class="app-header-menu-item" href="/about/">About</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/cv/">CV</a>
       </nav>
-      <p>All Things Azure &amp; Cloud</p>
+      <p>Blogging about all things Azure, AWS, Automation &amp; Cloud</p>
       <div class="app-header-social">
         
           <a href="https://twitter.com/andyr2319" target="_blank" rel="noreferrer noopener">
@@ -142,32 +146,32 @@ if (!doNotTrack) {
 <li>Azure Automation Account</li>
 </ol>
 <p>If you don&rsquo;t have these you can create some quickly with the below powershell, replacing the vars with what you want.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Install Pre-Req Modules</span>
-Install-Module Az.Resources, Az.Sql, Az.ManagedServiceIdentity, Az.Automation
-
-<span style="color:#75715e"># Define our variables</span>
-$location = <span style="color:#e6db74">&#34;australiaeast&#34;</span>
-$rsgName = <span style="color:#e6db74">&#34;myResourceGroup&#34;</span>
-$sqlServerName = <span style="color:#e6db74">&#34;mySQLServer&#34;</span>
-$sqlServeElasticPoolName = <span style="color:#e6db74">&#34;myElasticPool&#34;</span>
-$sqlServerUser = <span style="color:#e6db74">&#34;mysSQLAdminName&#34;</span>
-$sqlServerPass = <span style="color:#e6db74">&#34;SuperSecretPassword123!&#34;</span>
-$automationAccountName = <span style="color:#e6db74">&#34;myAutomationAccount&#34;</span>
-
-<span style="color:#75715e"># Create Resource Group</span>
-New-AzResourceGroup -Name $rsgName -Location $location
-
-<span style="color:#75715e"># Create our Credential Object</span>
-<span style="color:#66d9ef">[securestring]</span>$secStringPassword = ConvertTo-SecureString $sqlServerPass -AsPlainText -Force
-<span style="color:#66d9ef">[pscredential]</span>$sqlCreds = New-Object System.Management.Automation.PSCredential ($sqlServerUser, $secStringPassword)
-
-<span style="color:#75715e"># Create SQL Server and Elastic Pool</span>
-$sqlServer = New-AzSQLServer -ServerName $sqlServerName -ResourceGroupName $rsgName -Location $location -ServerVersion <span style="color:#e6db74">&#34;12.0&#34;</span> -SqlAdministratorCredentials $sqlCreds
-$sqlElasticPool = New-AzSqlElasticPool -ServerName $sqlServerName -ResourceGroupName $rsgName -ElasticPoolName $sqlServeElasticPoolName -Edition <span style="color:#e6db74">&#34;Standard&#34;</span> -Dtu 50 -DatabaseDtuMin 10 -DatabaseDtuMax 50 -StorageMB 51200
-
-<span style="color:#75715e"># Create Automation Account</span>
-New-AzAutomationAccount -Name $automationAccountName -ResourceGroupName $rsgName -Location $location -AssignSystemIdentity
-</code></pre></div><h3 id="create-your-azure-automation-runbook">Create your Azure Automation Runbook</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#75715e"># Install Pre-Req Modules</span>
+</span></span><span style="display:flex;"><span>Install-Module Az.Resources, Az.Sql, Az.ManagedServiceIdentity, Az.Automation
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Define our variables</span>
+</span></span><span style="display:flex;"><span>$location = <span style="color:#e6db74">&#34;australiaeast&#34;</span>
+</span></span><span style="display:flex;"><span>$rsgName = <span style="color:#e6db74">&#34;myResourceGroup&#34;</span>
+</span></span><span style="display:flex;"><span>$sqlServerName = <span style="color:#e6db74">&#34;mySQLServer&#34;</span>
+</span></span><span style="display:flex;"><span>$sqlServeElasticPoolName = <span style="color:#e6db74">&#34;myElasticPool&#34;</span>
+</span></span><span style="display:flex;"><span>$sqlServerUser = <span style="color:#e6db74">&#34;mysSQLAdminName&#34;</span>
+</span></span><span style="display:flex;"><span>$sqlServerPass = <span style="color:#e6db74">&#34;SuperSecretPassword123!&#34;</span>
+</span></span><span style="display:flex;"><span>$automationAccountName = <span style="color:#e6db74">&#34;myAutomationAccount&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create Resource Group</span>
+</span></span><span style="display:flex;"><span>New-AzResourceGroup -Name $rsgName -Location $location
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create our Credential Object</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[securestring]</span>$secStringPassword = ConvertTo-SecureString $sqlServerPass -AsPlainText -Force
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[pscredential]</span>$sqlCreds = New-Object System.Management.Automation.PSCredential ($sqlServerUser, $secStringPassword)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create SQL Server and Elastic Pool</span>
+</span></span><span style="display:flex;"><span>$sqlServer = New-AzSQLServer -ServerName $sqlServerName -ResourceGroupName $rsgName -Location $location -ServerVersion <span style="color:#e6db74">&#34;12.0&#34;</span> -SqlAdministratorCredentials $sqlCreds
+</span></span><span style="display:flex;"><span>$sqlElasticPool = New-AzSqlElasticPool -ServerName $sqlServerName -ResourceGroupName $rsgName -ElasticPoolName $sqlServeElasticPoolName -Edition <span style="color:#e6db74">&#34;Standard&#34;</span> -Dtu 50 -DatabaseDtuMin 10 -DatabaseDtuMax 50 -StorageMB 51200
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create Automation Account</span>
+</span></span><span style="display:flex;"><span>New-AzAutomationAccount -Name $automationAccountName -ResourceGroupName $rsgName -Location $location -AssignSystemIdentity
+</span></span></code></pre></div><h3 id="create-your-azure-automation-runbook">Create your Azure Automation Runbook</h3>
 <p>Go to your Azure Automation Account, either an existing one or the one you created above, and create a Runbook.</p>
 <p><img src="/images/elasticpool-runbook-1.png" alt="create a runbook"></p>
 <p>Name it and ensure its running <strong>Powershell</strong> and <strong>5.1</strong></p>
@@ -176,112 +180,112 @@ New-AzAutomationAccount -Name $automationAccountName -ResourceGroupName $rsgName
 You can also get this from my <a href="https://github.com/andyr8939/azure/blob/main/scale-sql-elasticpool-storage.ps1">GitHub Repo here</a>.
 Once pasted in click <strong>Save</strong> and then <strong>Publish</strong>.  If you don&rsquo;t click Publish then the Runbook won&rsquo;t execute.</p>
 <p><img src="/images/elasticpool-runbook-3.png" alt="create a runbook"></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e">&lt;#
-</span><span style="color:#75715e">    </span><span style="color:#e6db74">.SYNOPSIS</span><span style="color:#75715e">
-</span><span style="color:#75715e">    Automatically grow the allocated storage of an Azure SQL Elastic Pool from an Azure Runbook
-</span><span style="color:#75715e">
-</span><span style="color:#75715e">    </span><span style="color:#e6db74">.DESCRIPTION</span><span style="color:#75715e">
-</span><span style="color:#75715e">    When executed from an Azure Monitor Runbook Trigger, this script will expand the elastic pool by
-</span><span style="color:#75715e">    its specified amount, up to a hard limit.
-</span><span style="color:#75715e">    It also won&#39;t scale if it doesn&#39;t meet a scaling threshold, initially defined as 85%
-</span><span style="color:#75715e">
-</span><span style="color:#75715e">    Created by Andy Roberts (andyr8939@gmail.com)
-</span><span style="color:#75715e">
-</span><span style="color:#75715e">    </span><span style="color:#e6db74">.PARAMETER</span><span style="color:#75715e"> WebhookData
-</span><span style="color:#75715e">    Raw data passed to the runbook from Azure Monitor
-</span><span style="color:#75715e">
-</span><span style="color:#75715e">    </span><span style="color:#e6db74">.PARAMETER</span><span style="color:#75715e"> poolIncreaseMB
-</span><span style="color:#75715e">    How much space to add to the pool on each scale event.  Initially set at 50 GB.
-</span><span style="color:#75715e">
-</span><span style="color:#75715e">    </span><span style="color:#e6db74">.PARAMETER</span><span style="color:#75715e"> poolIncreaseLimitMB
-</span><span style="color:#75715e">    A hard limit of how big the pool can increase too.  Initially set at 1 TB.
-</span><span style="color:#75715e">#&gt;</span>
-
-<span style="color:#66d9ef">param</span>
-(
-[<span style="color:#66d9ef">Parameter</span> (<span style="color:#66d9ef">Mandatory</span>=$false)]
-<span style="color:#66d9ef">[object]</span> $WebhookData,
-[<span style="color:#66d9ef">Parameter</span> (<span style="color:#66d9ef">Mandatory</span>= $false)]
-<span style="color:#66d9ef">[String]</span> $poolIncreaseMB = <span style="color:#e6db74">&#34;51200&#34;</span>, <span style="color:#75715e"># 50GB</span>
-[<span style="color:#66d9ef">Parameter</span> (<span style="color:#66d9ef">Mandatory</span>= $false)]
-<span style="color:#66d9ef">[String]</span> $poolIncreaseLimitMB = <span style="color:#e6db74">&#34;1048576&#34;</span> <span style="color:#75715e"># 1TB</span>
-)
-
-$connectionName = <span style="color:#e6db74">&#34;AzureRunAsConnection&#34;</span>
-<span style="color:#66d9ef">try</span>
-{
-    <span style="color:#75715e"># Get the connection &#34;AzureRunAsConnection &#34;</span>
-    $servicePrincipalConnection=Get-AutomationConnection -Name $connectionName         
-
-    <span style="color:#e6db74">&#34;Logging in to Azure...&#34;</span>
-    Connect-AzAccount `
-        -ServicePrincipal `
-        -TenantId $servicePrincipalConnection.TenantId `
-        -ApplicationId $servicePrincipalConnection.ApplicationId `
-        -CertificateThumbprint $servicePrincipalConnection.CertificateThumbprint 
-}
-<span style="color:#66d9ef">catch</span> {
-    <span style="color:#66d9ef">if</span> (!$servicePrincipalConnection)
-    {
-        $ErrorMessage = <span style="color:#e6db74">&#34;Connection $connectionName not found.&#34;</span>
-        <span style="color:#66d9ef">throw</span> $ErrorMessage
-    } <span style="color:#66d9ef">else</span>{
-        Write-Error -Message $_.Exception
-        <span style="color:#66d9ef">throw</span> $_.Exception
-    }
-}
-
-Write-Output <span style="color:#e6db74">&#34;This runbook was started from webhook $WebhookName.&#34;</span>
-<span style="color:#75715e"># Collect Webhook Data and convert to use with JSON</span>
-$WebhookBody = (ConvertFrom-Json -InputObject $WebhookData.RequestBody)
-
-<span style="color:#75715e"># Obtain the WebhookBody containing the AlertContext and any details we need</span>
-$AlertContext = <span style="color:#66d9ef">[object]</span> ($WebhookBody.data).context
-$SubId = $AlertContext.subscriptionId
-$ResourceGroupName = $AlertContext.resourceGroupName
-$ResourceType = $AlertContext.resourceType
-$ResourceName = $AlertContext.resourceName
-$status = ($WebhookBody.data).status
-$threshold = $WebhookBody.data.context.condition.allOf.threshold
-
-<span style="color:#75715e"># Write results to output for logging</span>
-Write-output <span style="color:#e6db74">&#34;Subscription - $SubId&#34;</span>
-Write-output <span style="color:#e6db74">&#34;RSG Name - $ResourceGroupName&#34;</span>
-Write-output <span style="color:#e6db74">&#34;Resource Type - $ResourceType&#34;</span>
-Write-output <span style="color:#e6db74">&#34;Resrouce Name - $ResourceName&#34;</span>
-Write-output <span style="color:#e6db74">&#34;Status - $status&#34;</span>
-Write-output <span style="color:#e6db74">&#34;Threshold - $threshold&#34;</span>
-
-<span style="color:#75715e"># Only scale if over 85% allocated, to give chance to manually clean up on earlier 80% trigger with just email</span>
-<span style="color:#66d9ef">if</span> ($threshold <span style="color:#f92672">-le</span> 85) {
-    Write-Output <span style="color:#e6db74">&#34;Threshold is $threshold which does not require scaling.  Email only sent.&#34;</span>
-    Write-Output <span style="color:#e6db74">&#34;Scaling Occurs once threshold is over 90%&#34;</span>
-    Exit   
-}
-
-<span style="color:#75715e"># As its over 85% threshold, prepare to scale</span>
-<span style="color:#75715e"># Get Resources for SQL and Elastic Pool</span>
-$sqlServer = Get-AzSqlServer -ResourceGroupName $ResourceGroupName
-$elasticPool = Get-AzSqlElasticPool -ElasticPoolName $ResourceName -ResourceGroupName $ResourceGroupName -ServerName $sqlserver.ServerName
-
-<span style="color:#75715e"># Add 50GB to the current size</span>
-$newElasticPoolStorageGB = $elasticpool.StorageMB + $poolIncreaseMB <span style="color:#75715e"># Add 50GB</span>
-
-<span style="color:#75715e"># Check new size and if it will exceed 1TB as a hard limit to prevent runaway scale</span>
-<span style="color:#66d9ef">if</span> ($newElasticPoolStorageGB <span style="color:#f92672">-ge</span> $poolIncreaseLimitMB) {
-    $failError = <span style="color:#e6db74">&#34;Elastic Pool Size for $ResourceName will exceed its allowed upper limit of </span>$($poolIncreaseLimitMB /1024)<span style="color:#e6db74"> GB so cannot scale&#34;</span>
-    Write-Output $failError
-    <span style="color:#66d9ef">throw</span> $failError
-}
-
-Write-Output <span style="color:#e6db74">&#34;Current Elastic Pool Size for $ResourceName is </span>$($elasticpool.StorageMB /1024)<span style="color:#e6db74"> GB&#34;</span>
-Write-Output <span style="color:#e6db74">&#34;Scaling Elastic Pool $ResourceName to </span>$($newElasticPoolStorageGB /1024)<span style="color:#e6db74"> GB&#34;</span>
-
-<span style="color:#75715e"># Scale Elastic Pool to new size</span>
-$elasticpool | Set-AzSqlElasticPool -StorageMB $newElasticPoolStorageGB
-
-Write-Output <span style="color:#e6db74">&#34;New Elastic Pool Size for $ResourceName is </span>$($newElasticPoolStorageGB /1024)<span style="color:#e6db74"> GB&#34;</span>
-</code></pre></div><p>Now you had added your Runbook, you need to ensure that the Automation Account knows about the AZ.Sql Module so it can actually run the powershell cmdlets in the runbook.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#75715e">&lt;#
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    </span><span style="color:#e6db74">.SYNOPSIS</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    Automatically grow the allocated storage of an Azure SQL Elastic Pool from an Azure Runbook
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    </span><span style="color:#e6db74">.DESCRIPTION</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    When executed from an Azure Monitor Runbook Trigger, this script will expand the elastic pool by
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    its specified amount, up to a hard limit.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    It also won&#39;t scale if it doesn&#39;t meet a scaling threshold, initially defined as 85%
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    Created by Andy Roberts (andyr8939@gmail.com)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    </span><span style="color:#e6db74">.PARAMETER</span><span style="color:#75715e"> WebhookData
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    Raw data passed to the runbook from Azure Monitor
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    </span><span style="color:#e6db74">.PARAMETER</span><span style="color:#75715e"> poolIncreaseMB
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    How much space to add to the pool on each scale event.  Initially set at 50 GB.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    </span><span style="color:#e6db74">.PARAMETER</span><span style="color:#75715e"> poolIncreaseLimitMB
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    A hard limit of how big the pool can increase too.  Initially set at 1 TB.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">param</span>
+</span></span><span style="display:flex;"><span>(
+</span></span><span style="display:flex;"><span>[<span style="color:#66d9ef">Parameter</span> (<span style="color:#66d9ef">Mandatory</span>=$false)]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[object]</span> $WebhookData,
+</span></span><span style="display:flex;"><span>[<span style="color:#66d9ef">Parameter</span> (<span style="color:#66d9ef">Mandatory</span>= $false)]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[String]</span> $poolIncreaseMB = <span style="color:#e6db74">&#34;51200&#34;</span>, <span style="color:#75715e"># 50GB</span>
+</span></span><span style="display:flex;"><span>[<span style="color:#66d9ef">Parameter</span> (<span style="color:#66d9ef">Mandatory</span>= $false)]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[String]</span> $poolIncreaseLimitMB = <span style="color:#e6db74">&#34;1048576&#34;</span> <span style="color:#75715e"># 1TB</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$connectionName = <span style="color:#e6db74">&#34;AzureRunAsConnection&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Get the connection &#34;AzureRunAsConnection &#34;</span>
+</span></span><span style="display:flex;"><span>    $servicePrincipalConnection=Get-AutomationConnection -Name $connectionName         
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Logging in to Azure...&#34;</span>
+</span></span><span style="display:flex;"><span>    Connect-AzAccount `
+</span></span><span style="display:flex;"><span>        -ServicePrincipal `
+</span></span><span style="display:flex;"><span>        -TenantId $servicePrincipalConnection.TenantId `
+</span></span><span style="display:flex;"><span>        -ApplicationId $servicePrincipalConnection.ApplicationId `
+</span></span><span style="display:flex;"><span>        -CertificateThumbprint $servicePrincipalConnection.CertificateThumbprint 
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">catch</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (!$servicePrincipalConnection)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        $ErrorMessage = <span style="color:#e6db74">&#34;Connection $connectionName not found.&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> $ErrorMessage
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span>{
+</span></span><span style="display:flex;"><span>        Write-Error -Message $_.Exception
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> $_.Exception
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Write-Output <span style="color:#e6db74">&#34;This runbook was started from webhook $WebhookName.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Collect Webhook Data and convert to use with JSON</span>
+</span></span><span style="display:flex;"><span>$WebhookBody = (ConvertFrom-Json -InputObject $WebhookData.RequestBody)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Obtain the WebhookBody containing the AlertContext and any details we need</span>
+</span></span><span style="display:flex;"><span>$AlertContext = <span style="color:#66d9ef">[object]</span> ($WebhookBody.data).context
+</span></span><span style="display:flex;"><span>$SubId = $AlertContext.subscriptionId
+</span></span><span style="display:flex;"><span>$ResourceGroupName = $AlertContext.resourceGroupName
+</span></span><span style="display:flex;"><span>$ResourceType = $AlertContext.resourceType
+</span></span><span style="display:flex;"><span>$ResourceName = $AlertContext.resourceName
+</span></span><span style="display:flex;"><span>$status = ($WebhookBody.data).status
+</span></span><span style="display:flex;"><span>$threshold = $WebhookBody.data.context.condition.allOf.threshold
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Write results to output for logging</span>
+</span></span><span style="display:flex;"><span>Write-output <span style="color:#e6db74">&#34;Subscription - $SubId&#34;</span>
+</span></span><span style="display:flex;"><span>Write-output <span style="color:#e6db74">&#34;RSG Name - $ResourceGroupName&#34;</span>
+</span></span><span style="display:flex;"><span>Write-output <span style="color:#e6db74">&#34;Resource Type - $ResourceType&#34;</span>
+</span></span><span style="display:flex;"><span>Write-output <span style="color:#e6db74">&#34;Resrouce Name - $ResourceName&#34;</span>
+</span></span><span style="display:flex;"><span>Write-output <span style="color:#e6db74">&#34;Status - $status&#34;</span>
+</span></span><span style="display:flex;"><span>Write-output <span style="color:#e6db74">&#34;Threshold - $threshold&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Only scale if over 85% allocated, to give chance to manually clean up on earlier 80% trigger with just email</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> ($threshold <span style="color:#f92672">-le</span> 85) {
+</span></span><span style="display:flex;"><span>    Write-Output <span style="color:#e6db74">&#34;Threshold is $threshold which does not require scaling.  Email only sent.&#34;</span>
+</span></span><span style="display:flex;"><span>    Write-Output <span style="color:#e6db74">&#34;Scaling Occurs once threshold is over 90%&#34;</span>
+</span></span><span style="display:flex;"><span>    Exit   
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># As its over 85% threshold, prepare to scale</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Get Resources for SQL and Elastic Pool</span>
+</span></span><span style="display:flex;"><span>$sqlServer = Get-AzSqlServer -ResourceGroupName $ResourceGroupName
+</span></span><span style="display:flex;"><span>$elasticPool = Get-AzSqlElasticPool -ElasticPoolName $ResourceName -ResourceGroupName $ResourceGroupName -ServerName $sqlserver.ServerName
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Add 50GB to the current size</span>
+</span></span><span style="display:flex;"><span>$newElasticPoolStorageGB = $elasticpool.StorageMB + $poolIncreaseMB <span style="color:#75715e"># Add 50GB</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check new size and if it will exceed 1TB as a hard limit to prevent runaway scale</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> ($newElasticPoolStorageGB <span style="color:#f92672">-ge</span> $poolIncreaseLimitMB) {
+</span></span><span style="display:flex;"><span>    $failError = <span style="color:#e6db74">&#34;Elastic Pool Size for $ResourceName will exceed its allowed upper limit of </span>$($poolIncreaseLimitMB /1024)<span style="color:#e6db74"> GB so cannot scale&#34;</span>
+</span></span><span style="display:flex;"><span>    Write-Output $failError
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">throw</span> $failError
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Write-Output <span style="color:#e6db74">&#34;Current Elastic Pool Size for $ResourceName is </span>$($elasticpool.StorageMB /1024)<span style="color:#e6db74"> GB&#34;</span>
+</span></span><span style="display:flex;"><span>Write-Output <span style="color:#e6db74">&#34;Scaling Elastic Pool $ResourceName to </span>$($newElasticPoolStorageGB /1024)<span style="color:#e6db74"> GB&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Scale Elastic Pool to new size</span>
+</span></span><span style="display:flex;"><span>$elasticpool | Set-AzSqlElasticPool -StorageMB $newElasticPoolStorageGB
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Write-Output <span style="color:#e6db74">&#34;New Elastic Pool Size for $ResourceName is </span>$($newElasticPoolStorageGB /1024)<span style="color:#e6db74"> GB&#34;</span>
+</span></span></code></pre></div><p>Now you had added your Runbook, you need to ensure that the Automation Account knows about the AZ.Sql Module so it can actually run the powershell cmdlets in the runbook.</p>
 <p>In your Automation Account, select <strong>Modules</strong> and <strong>Add a Module</strong>.</p>
 <p><img src="/images/elasticpool-runbook-4a.png" alt="add module"></p>
 <p>Select <strong>Browse from Gallery</strong> and then click to Browse the Gallery.  A nice feature here is that you don&rsquo;t need to know the module name, just type the Powershell cmd you want and it will tell you the module.  So for example type in <strong>Get-AzSQLServer</strong> and it will show you the Az.Sql Module.  Select it and then when it comes back to the Add a Module screen, select <strong>5.1</strong> as the Runtime Version and <strong>Import</strong>.  This can take a few minutes but as we are finished here so you can move on.</p>
@@ -319,7 +323,7 @@ Write-Output <span style="color:#e6db74">&#34;New Elastic Pool Size for $Resourc
     <div class="post-footer">
       <div id="disqus_thread"></div>
 <script type="application/javascript">
-    var disqus_config = function () {
+    window.disqus_config = function () {
     
     
     

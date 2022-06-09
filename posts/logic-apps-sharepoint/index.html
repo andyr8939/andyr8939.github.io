@@ -1,14 +1,15 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title>Azure Logic Apps for Application Gateway Reports // All Things Azure &amp; Cloud</title>
+    <title>Azure Logic Apps for Application Gateway Reports // Andy Roberts</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.92.1" />
+    <meta name="generator" content="Hugo 0.100.2" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="Andy Roberts" />
     <meta name="description" content="" />
     <link rel="stylesheet" href="https://www.andyroberts.nz/css/main.min.4a7ec8660f9a44b08c4da97c5f2e31b1192df1d4d0322e65c0dbbc6ecb1b863f.css" />
+
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-SD58B2M7HG"></script>
 <script>
@@ -42,7 +43,7 @@ In my current role we make heavy use of Azure Application Gateways which are L7 
   <body>
     <header class="app-header">
       <a href="https://www.andyroberts.nz"><img class="app-header-avatar" src="/profile.jpg" alt="Andy Roberts" /></a>
-      <h1>All Things Azure &amp; Cloud</h1>
+      <h1>Andy Roberts</h1>
       <nav class="app-header-menu">
           <a class="app-header-menu-item" href="/">Home</a>
              - 
@@ -54,8 +55,11 @@ In my current role we make heavy use of Azure Application Gateways which are L7 
              - 
           
           <a class="app-header-menu-item" href="/about/">About</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/cv/">CV</a>
       </nav>
-      <p>All Things Azure &amp; Cloud</p>
+      <p>Blogging about all things Azure, AWS, Automation &amp; Cloud</p>
       <div class="app-header-social">
         
           <a href="https://twitter.com/andyr2319" target="_blank" rel="noreferrer noopener">
@@ -143,7 +147,7 @@ In my current role we make heavy use of Azure Application Gateways which are L7 
 <p>When you set this up the first time, you need to point it to your subscription, resource group and the log analytics workspace you are sending AppGW logs too.  In the Query, input your Kusto, which is below</p>
 <pre tabindex="0"><code class="language-kusto" data-lang="kusto">// 500 to 599 Errors on Application Gateway Access Logs
 AzureDiagnostics
-| where ResourceType == &quot;APPLICATIONGATEWAYS&quot; and OperationName == &quot;ApplicationGatewayAccess&quot; and Resource == &quot;YOUR-APPGW-NAME-HERE&quot; and httpStatus_d between (500 .. 599)
+| where ResourceType == &#34;APPLICATIONGATEWAYS&#34; and OperationName == &#34;ApplicationGatewayAccess&#34; and Resource == &#34;YOUR-APPGW-NAME-HERE&#34; and httpStatus_d between (500 .. 599)
 | project TimeGenerated, Category, Resource, httpStatus_d, requestUri_s, host_s, ruleName_s, clientIP_s, httpMethod_s, userAgent_s
 </code></pre><h3 id="create-csv-table">Create CSV Table</h3>
 <p>Add an Action for <strong>Data Operations / Create CSV Table</strong></p>
@@ -163,8 +167,8 @@ AzureDiagnostics
 <p>In this step you run a Kusto query to get all WAF records that are <strong>blocked</strong>.  We will then use this data in the next step to filter with.  Add an Action for <strong>Azure Monitor Logs / Run query and list results</strong> with the below query</p>
 <pre tabindex="0"><code>// Block AppGW Requests
 AzureDiagnostics
-| where ResourceProvider == &quot;MICROSOFT.NETWORK&quot; and Category == &quot;ApplicationGatewayFirewallLog&quot; and Resource == &quot;YOUR-APPGW-NAME-HERE&quot; 
-| where action_s contains &quot;Blocked&quot;
+| where ResourceProvider == &#34;MICROSOFT.NETWORK&#34; and Category == &#34;ApplicationGatewayFirewallLog&#34; and Resource == &#34;YOUR-APPGW-NAME-HERE&#34; 
+| where action_s contains &#34;Blocked&#34;
 | project TimeGenerated, Category, Resource, transactionId_g, action_s, ruleSetType_s, ruleSetVersion_s, ruleId_s ,requestUri_s, hostname_s , clientIp_s, Message, details_message_s
 </code></pre><h3 id="initialize-variable">Initialize Variable</h3>
 <p>We are now setting up a blank variable array for the next step to store results in. Add an Action for <strong>Variables / Initialize Variable</strong>.  I called mine <strong>BlockedData</strong> but make sure you always pick <strong>Array</strong> as the type.</p>
@@ -183,83 +187,83 @@ AzureDiagnostics
 <p>Add an Action for <strong>Control / For Each</strong> and in the output pick the <strong>value</strong> from the previous step.  You then create an extra action inside the For Each look for <strong>Azure Monitor Logs / Run query and list results</strong>.  Inside that run the below Kusto.</p>
 <pre tabindex="0"><code>// AppGW Blocks with matching transactional ID matches
 AzureDiagnostics
-| where ResourceProvider == &quot;MICROSOFT.NETWORK&quot; and Category == &quot;ApplicationGatewayFirewallLog&quot; and Resource == &quot;YOUR-APPGW-NAME-HERE&quot; 
-| where transactionId_g contains &quot;@{items('For_each')?['transactionId_g']}&quot;
+| where ResourceProvider == &#34;MICROSOFT.NETWORK&#34; and Category == &#34;ApplicationGatewayFirewallLog&#34; and Resource == &#34;YOUR-APPGW-NAME-HERE&#34; 
+| where transactionId_g contains &#34;@{items(&#39;For_each&#39;)?[&#39;transactionId_g&#39;]}&#34;
 | project TimeGenerated, Category, Resource, policyScopeName_s, hostname_s, transactionId_g, clientIp_s, action_s, ruleSetType_s, ruleSetVersion_s, ruleId_s ,requestUri_s, Message, details_message_s,details_file_s
 </code></pre><p>Now inside that, where the <code>contains &quot;@{items('For_each')?['transactionId_g']}&quot;</code> part is, that is taking the dynamic content of the previous query where you got all the blocks, and getting all the WAF records for that.  This is going to give you matches and blocks!</p>
 <h4 id="parse-json">Parse JSON</h4>
 <p>You now been to parse the results of the query above, which comes out in JSON so you are able to extract the results for the for each loop.  Otherwise you don&rsquo;t get all the data coming through.  I used this formatting for the query earlier.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
-    <span style="color:#f92672">&#34;items&#34;</span>: {
-        <span style="color:#f92672">&#34;properties&#34;</span>: {
-            <span style="color:#f92672">&#34;Category&#34;</span>: {
-                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-            },
-            <span style="color:#f92672">&#34;Message&#34;</span>: {
-                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-            },
-            <span style="color:#f92672">&#34;Resource&#34;</span>: {
-                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-            },
-            <span style="color:#f92672">&#34;TimeGenerated&#34;</span>: {
-                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-            },
-            <span style="color:#f92672">&#34;action_s&#34;</span>: {
-                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-            },
-            <span style="color:#f92672">&#34;clientIp_s&#34;</span>: {
-                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-            },
-            <span style="color:#f92672">&#34;details_file_s&#34;</span>: {
-                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-            },
-            <span style="color:#f92672">&#34;details_message_s&#34;</span>: {
-                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-            },
-            <span style="color:#f92672">&#34;hostname_s&#34;</span>: {
-                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-            },
-            <span style="color:#f92672">&#34;policyScopeName_s&#34;</span>: {
-                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-            },
-            <span style="color:#f92672">&#34;requestUri_s&#34;</span>: {
-                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-            },
-            <span style="color:#f92672">&#34;ruleId_s&#34;</span>: {
-                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-            },
-            <span style="color:#f92672">&#34;ruleSetType_s&#34;</span>: {
-                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-            },
-            <span style="color:#f92672">&#34;ruleSetVersion_s&#34;</span>: {
-                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-            },
-            <span style="color:#f92672">&#34;transactionId_g&#34;</span>: {
-                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-            }
-        },
-        <span style="color:#f92672">&#34;required&#34;</span>: [
-            <span style="color:#e6db74">&#34;TimeGenerated&#34;</span>,
-            <span style="color:#e6db74">&#34;Category&#34;</span>,
-            <span style="color:#e6db74">&#34;Resource&#34;</span>,
-            <span style="color:#e6db74">&#34;policyScopeName_s&#34;</span>,
-            <span style="color:#e6db74">&#34;hostname_s&#34;</span>,
-            <span style="color:#e6db74">&#34;transactionId_g&#34;</span>,
-            <span style="color:#e6db74">&#34;clientIp_s&#34;</span>,
-            <span style="color:#e6db74">&#34;action_s&#34;</span>,
-            <span style="color:#e6db74">&#34;ruleSetType_s&#34;</span>,
-            <span style="color:#e6db74">&#34;ruleSetVersion_s&#34;</span>,
-            <span style="color:#e6db74">&#34;ruleId_s&#34;</span>,
-            <span style="color:#e6db74">&#34;requestUri_s&#34;</span>,
-            <span style="color:#e6db74">&#34;Message&#34;</span>,
-            <span style="color:#e6db74">&#34;details_message_s&#34;</span>,
-            <span style="color:#e6db74">&#34;details_file_s&#34;</span>
-        ],
-        <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;object&#34;</span>
-    },
-    <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;array&#34;</span>
-}
-</code></pre></div><h4 id="final-for-each">Final For Each</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;items&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;properties&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Category&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Message&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Resource&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;TimeGenerated&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;action_s&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;clientIp_s&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;details_file_s&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;details_message_s&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;hostname_s&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;policyScopeName_s&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;requestUri_s&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;ruleId_s&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;ruleSetType_s&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;ruleSetVersion_s&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;transactionId_g&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;required&#34;</span>: [
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;TimeGenerated&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Category&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Resource&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;policyScopeName_s&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;hostname_s&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;transactionId_g&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;clientIp_s&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;action_s&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;ruleSetType_s&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;ruleSetVersion_s&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;ruleId_s&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;requestUri_s&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Message&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;details_message_s&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;details_file_s&#34;</span>
+</span></span><span style="display:flex;"><span>        ],
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;object&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;array&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="final-for-each">Final For Each</h4>
 <p>Add an Action for <strong>Control / For Each</strong> and for the output you will pick the <strong>Body</strong> of the Parse JSON step.</p>
 <p>Then add an action for <strong>Variables / Append to Array Variable</strong> and give it the name of your Array you created earlier.  The Value is going to be the <strong>Current Item</strong> of the For Each loop, which ensures the records being parsed for a particular transaction ID all come through correctly.  This is how you get Matches and Blocks.</p>
 <h4 id="create-csv-table-1">Create CSV Table</h4>
@@ -274,7 +278,7 @@ AzureDiagnostics
     <div class="post-footer">
       <div id="disqus_thread"></div>
 <script type="application/javascript">
-    var disqus_config = function () {
+    window.disqus_config = function () {
     
     
     

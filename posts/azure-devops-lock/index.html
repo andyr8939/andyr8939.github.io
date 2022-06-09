@@ -1,14 +1,15 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title>Azure Devops Pipelines - Could not get lock /var/lib/dpkg/lock-frontend // All Things Azure &amp; Cloud</title>
+    <title>Azure Devops Pipelines - Could not get lock /var/lib/dpkg/lock-frontend // Andy Roberts</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.92.1" />
+    <meta name="generator" content="Hugo 0.100.2" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="Andy Roberts" />
     <meta name="description" content="" />
     <link rel="stylesheet" href="https://www.andyroberts.nz/css/main.min.4a7ec8660f9a44b08c4da97c5f2e31b1192df1d4d0322e65c0dbbc6ecb1b863f.css" />
+
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-SD58B2M7HG"></script>
 <script>
@@ -42,7 +43,7 @@ E: Could not get lock /var/lib/dpkg/lock-frontend - open (11: Resource temporari
   <body>
     <header class="app-header">
       <a href="https://www.andyroberts.nz"><img class="app-header-avatar" src="/profile.jpg" alt="Andy Roberts" /></a>
-      <h1>All Things Azure &amp; Cloud</h1>
+      <h1>Andy Roberts</h1>
       <nav class="app-header-menu">
           <a class="app-header-menu-item" href="/">Home</a>
              - 
@@ -54,8 +55,11 @@ E: Could not get lock /var/lib/dpkg/lock-frontend - open (11: Resource temporari
              - 
           
           <a class="app-header-menu-item" href="/about/">About</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/cv/">CV</a>
       </nav>
-      <p>All Things Azure &amp; Cloud</p>
+      <p>Blogging about all things Azure, AWS, Automation &amp; Cloud</p>
       <div class="app-header-social">
         
           <a href="https://twitter.com/andyr2319" target="_blank" rel="noreferrer noopener">
@@ -121,27 +125,27 @@ E: Could not get lock /var/lib/dpkg/lock-frontend - open (11: Resource temporari
     </header>
     <div class="post-content">
       <p>I&rsquo;ve been using Azure DevOps Pipelines to build our Azure Infrastructure with Terraform for nearly 9 months now and its been pretty much rock solid.  However, this week all of a sudden my pipelines started failing if I ran more than 1 build at a time, and all gave this error.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">E: Could not get lock /var/lib/dpkg/lock-frontend - open <span style="color:#f92672">(</span>11: Resource temporarily unavailable<span style="color:#f92672">)</span>
-E: Unable to acquire the dpkg frontend lock <span style="color:#f92672">(</span>/var/lib/dpkg/lock-frontend<span style="color:#f92672">)</span>, is another process using it?
-</code></pre></div><p><img src="/images/pipeline-lock-1.png" alt="failed_pipeline_1"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>E: Could not get lock /var/lib/dpkg/lock-frontend - open <span style="color:#f92672">(</span>11: Resource temporarily unavailable<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>E: Unable to acquire the dpkg frontend lock <span style="color:#f92672">(</span>/var/lib/dpkg/lock-frontend<span style="color:#f92672">)</span>, is another process using it?
+</span></span></code></pre></div><p><img src="/images/pipeline-lock-1.png" alt="failed_pipeline_1"></p>
 <p>This was happening at the part of the pipeline where I install some dependencies I need on the ubuntu agent, mainly <em>jq, unzip, zip</em> etc.  It was only happening when I ran multiple pipelines at once, so my self hosted VM Scale Sets agents ramped up.  If it was a single deployment it was fine.</p>
 <p>Seeing your pipelines do this when you are under the pump to deliver a lot of changes is frustrating.</p>
 <p><img src="/images/pipeline-lock-2.png" alt="failed_pipeline_2"></p>
 <h2 id="solution">Solution</h2>
 <p>It turned out to be fairly simple.  When the VM Scale Set Instance was starting, something which I think was the Azure DevOps Extension, was using apt-get to get updates, which meant my dependency section couldn&rsquo;t run apt-get due to the lock and crashed out.</p>
 <p>To fix it I added in a wait loop to my dependencies section in the pipeline with the below.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># Install dependencies in the agent pool server</span>
-- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
-  <span style="color:#f92672">inputs</span>:
-    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
-    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
-</span><span style="color:#e6db74">      until sudo apt-get -y update &amp;&amp; sudo apt-get install unzip zip jq -y
-</span><span style="color:#e6db74">      do
-</span><span style="color:#e6db74">      echo &#34;Try again&#34;
-</span><span style="color:#e6db74">      sleep 2
-</span><span style="color:#e6db74">      done</span>      
-  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Install Dependencies&#39;</span>
-</code></pre></div><p>All that is doing is trying to get the packages with apt-get, and if it can&rsquo;t do it because of the lock, wait 2 seconds and try again until it can.  Simple, but very effective.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Install dependencies in the agent pool server</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      until sudo apt-get -y update &amp;&amp; sudo apt-get install unzip zip jq -y
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      do
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      echo &#34;Try again&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      sleep 2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      done</span>      
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Install Dependencies&#39;</span>
+</span></span></code></pre></div><p>All that is doing is trying to get the packages with apt-get, and if it can&rsquo;t do it because of the lock, wait 2 seconds and try again until it can.  Simple, but very effective.</p>
 <p>So now instead of my dependency check crashing out in &lt;1s if there was a lock, it typically hits a lock for 10 seconds or so, then completes fine and I have had 100% pipeline success since.</p>
 <p>Hope that helps!</p>
 <p>Andy</p>
@@ -150,7 +154,7 @@ E: Unable to acquire the dpkg frontend lock <span style="color:#f92672">(</span>
     <div class="post-footer">
       <div id="disqus_thread"></div>
 <script type="application/javascript">
-    var disqus_config = function () {
+    window.disqus_config = function () {
     
     
     

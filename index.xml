@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>All Things Azure &amp; Cloud</title>
+    <title>Andy Roberts</title>
     <link>https://www.andyroberts.nz/</link>
-    <description>Recent content on All Things Azure &amp; Cloud</description>
+    <description>Recent content on Andy Roberts</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Mon, 31 Jan 2022 21:36:09 +1300</lastBuildDate><atom:link href="https://www.andyroberts.nz/index.xml" rel="self" type="application/rss+xml" />
     <item>
@@ -82,6 +82,15 @@ In my current role we make heavy use of Azure Application Gateways which are L7 
       <description>Hi, I&amp;rsquo;m Andy Roberts and welcome to my Blog!
 Currently I live in Auckland, New Zealand and work for a company called Vista Entertainment as a Cloud Engineer. Day to day, this means I am working primarily with Azure, but also with AWS. So each day I&amp;rsquo;m building infrastructure, automating deployments with tools such as Powershell and Terraform and generally all things Cloud.
 Before that I spent several years with companies such as WEX Inc which is where I honed my Cloud skills working on some pretty massive AWS deployments.</description>
+    </item>
+    
+    <item>
+      <title>Cloud Engineer / Architect</title>
+      <link>https://www.andyroberts.nz/cv/</link>
+      <pubDate>Mon, 19 Apr 2021 19:58:42 +1200</pubDate>
+      
+      <guid>https://www.andyroberts.nz/cv/</guid>
+      <description>I’m a passionate Cloud Engineer with in-depth experience of both Azure and AWS, with a particular passion for infrastructure and platform automation. Having worked in a variety of IT roles for over 20 years, across a number of companies around the world, it has given me a great appreciation for how to help companies and my clients get the best value out of their technology stacks. I’m an avid learner and adopter of new technologies, always willing to go that extra mile to get the job done.</description>
     </item>
     
     <item>
