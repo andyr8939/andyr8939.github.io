@@ -164,7 +164,7 @@ Traditionally with DR in a Virtual Machine infrastructure, you would replicate t
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># Check both clusters are created</span>
 </span></span><span style="display:flex;"><span>az aks list --resource-group $myResourceGroup --output table
 </span></span></code></pre></div><p>You will then end up with a couple of clusters.</p>
-<p><img src="../../static/images/velero-blog-1.png" alt="aks_clusters"></p>
+<p><img src="/images/velero-blog-1.png" alt="aks_clusters"></p>
 <p>So, now you have a couple of AKS clusters in a resource group ready to go, but Velero needs a location to store config/backups etc.  You can use lots of options for this, but the one I found to be the easiest to setup with AKS with a regular Azure Storage Account, so lets create on.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Setup Storage Account Resource Group</span>
 </span></span><span style="display:flex;"><span>veleroStorageAccount<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;stvelerotest123&#34;</span>
@@ -201,7 +201,7 @@ Traditionally with DR in a Virtual Machine infrastructure, you would replicate t
 </span></span></span><span style="display:flex;"><span><span style="color:#e6db74">AZURE_CLOUD_NAME=AzurePublicCloud
 </span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
 </span></span></code></pre></div><p>You should end up with a file like this.
-<img src="../../static/images/velero-blog-2.png" alt="blob_access"></p>
+<img src="/images/velero-blog-2.png" alt="blob_access"></p>
 <h2 id="velero-client-install">Velero Client Install</h2>
 <p>If that has all worked, you now need to deploy Velero to your clusters, but first lets (download the Velero Client)[https://velero.io/docs/main/basic-install/#install-the-cli]. as you need this to interact with Velero and you will see how it looks without the cluster setup.  From that link take whatever is appropriate for your OS, but for me lets do it on Ubuntu.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wget https://github.com/vmware-tanzu/velero/releases/download/v1.12.1/velero-v1.12.1-linux-amd64.tar.gz
@@ -214,7 +214,7 @@ Traditionally with DR in a Virtual Machine infrastructure, you would replicate t
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># Then check Velero</span>
 </span></span><span style="display:flex;"><span>velero version
 </span></span></code></pre></div><p>You&rsquo;ll get this below, which means Velero isn&rsquo;t running on your cluster yet.</p>
-<p><img src="../../static/images/velero-blog-3.png" alt="velero_client"></p>
+<p><img src="/images/velero-blog-3.png" alt="velero_client"></p>
 <p>So lets fix that.</p>
 <h2 id="velero-server-install">Velero Server Install</h2>
 <p>Installing Velero can be done with the Velero CLI which I&rsquo;ll show below, or with <a href="https://github.com/vmware-tanzu/helm-charts/blob/main/charts/velero/values.yaml">Helm Charts</a> which is what I use in production, but for now we&rsquo;ll install with the CLI as its easier to understand.</p>
@@ -227,25 +227,25 @@ Traditionally with DR in a Virtual Machine infrastructure, you would replicate t
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --backup-location-config resourceGroup<span style="color:#f92672">=</span>$myResourceGroup,storageAccount<span style="color:#f92672">=</span>$veleroStorageAccount,storageAccountKeyEnvVar<span style="color:#f92672">=</span>AZURE_STORAGE_ACCOUNT_ACCESS_KEY,subscriptionId<span style="color:#f92672">=</span>$mySubID <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --use-volume-snapshots<span style="color:#f92672">=</span>false
 </span></span></code></pre></div><p>Now when you run a version check you should see Client and Server are correct.</p>
-<p><img src="../../static/images/velero-blog-4.png" alt="velero_version"></p>
+<p><img src="/images/velero-blog-4.png" alt="velero_version"></p>
 <p>Next you need to check if your backup storage, which is the Storage Account created earlier is working.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>velero backup-location get
-</span></span></code></pre></div><p><img src="../../static/images/velero-blog-5.png" alt="velero_storage"></p>
+</span></span></code></pre></div><p><img src="/images/velero-blog-5.png" alt="velero_storage"></p>
 <p>If you <em>Phase</em> shows as <strong>Available</strong> then you have setup the base requirements for Velero.</p>
 <h2 id="create-a-backup-and-backup-schedule">Create a Backup and Backup Schedule</h2>
 <p>To create a backup with Velero, you configure this with the CLI tool and you can crete a schedule or one-off backups.  I&rsquo;ll setup both below, but first lets verify we have something to backup and only in one cluster, so I have setup a couple of demo pods and a service etc in my AKS-1 cluster, but you can see below that nothing exists on my AKS-2 cluster.</p>
-<p><img src="../../static/images/velero-blog-6.png" alt="velero_base_setup"></p>
+<p><img src="/images/velero-blog-6.png" alt="velero_base_setup"></p>
 <p>First then lets create a scheduled backup on AKS-1.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>velero schedule create <span style="color:#e6db74">&#34;test-schedule&#34;</span> --schedule<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0 0-23 * * *&#34;</span> --include-namespaces test --exclude-resources persistentvolumes --ttl 24h0m0s
 </span></span><span style="display:flex;"><span>velero get schedule
 </span></span></code></pre></div><p>This has given us a schedule called &ldquo;<strong>test-schedule</strong> which will run every hour and backup the <strong>test</strong> namespace, and you can see that in the results.</p>
-<p><img src="../../static/images/velero-blog-7.png" alt="velero_schedule"></p>
+<p><img src="/images/velero-blog-7.png" alt="velero_schedule"></p>
 <p>If we want to execute a backup straight away from that schedule, we run the following.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>velero backup create --from-schedule test-schedule
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># It will output a command to run similar to this</span>
 </span></span><span style="display:flex;"><span>velero backup describe test-schedule-20231109024158
 </span></span></code></pre></div><p>You&rsquo;ll see it runs very fast but like above you&rsquo;ll end up with something like this.</p>
-<p><img src="../../static/images/velero-blog-8.png" alt="velero_backup"></p>
+<p><img src="/images/velero-blog-8.png" alt="velero_backup"></p>
 <p>OK, there is a lot to unpack here.</p>
 <ul>
 <li>First is the command to create the backup</li>
@@ -260,14 +260,14 @@ Traditionally with DR in a Virtual Machine infrastructure, you would replicate t
 </span></span></code></pre></div><h2 id="time-to-restore">Time to Restore</h2>
 <p>So we have a backup, and lets imagine I have just lost the entire Azure Region and my cluster is dead, I can&rsquo;t access it.   I need to restore to DR, how do I do that?</p>
 <p>This is the beauty I have found with Velero as it is super simple.   First lets change to our DR cluster AKS-2 and try and see what backups we have, but realizing all the backups we did were on AKS-1 and there was nothing running in AKS-2</p>
-<p><img src="../../static/images/velero-blog-9.png" alt="velero_backup_dr"></p>
+<p><img src="/images/velero-blog-9.png" alt="velero_backup_dr"></p>
 <p>OK thats good, I am on my DR cluster with nothing running but I can see my Prod backup from my AKS-1 cluster I took earlier.   Thats working because both clusters are accessing the same Azure Storage Account for backups/restores, so as long as that is GeoRedundant then I am good to go.</p>
 <p>To restore my backup to my new cluster lets try this&hellip;</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>velero create restore --from-backup test-schedule-20231109024158
 </span></span><span style="display:flex;"><span>velero restore describe test-schedule-20231109024158-20231109025349
-</span></span></code></pre></div><p><img src="../../static/images/velero-blog-10.png" alt="velero_restore_dr"></p>
+</span></span></code></pre></div><p><img src="/images/velero-blog-10.png" alt="velero_restore_dr"></p>
 <p>That&rsquo;s fast!!!  The restore here took 4 seconds to complete.  That can&rsquo;t be right can it?  Lets check the namespace.</p>
-<p><img src="../../static/images/velero-blog-11.png" alt="velero_restore_complete"></p>
+<p><img src="/images/velero-blog-11.png" alt="velero_restore_complete"></p>
 <p>Everything is there, my pods, service, all the secrets and configmaps etc and everything is running, in a new cluster in a new Azure Region!!  It worked!</p>
 <h2 id="summary">Summary</h2>
 <p>That was just a quick overview of Velero and how you can utilize it for doing multi region DR at a high level with Azure Kubernetes Service.   It was a basic demonstration but the principal is the same if you are doing just a single cluster backup and restore, to cluster migrations, or as demonstrated here, regional disaster recovery of clusters.</p>
