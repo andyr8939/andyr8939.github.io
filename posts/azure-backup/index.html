@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en-us">
+<html lang="en">
   <head>
     <title>Azure Backups for Virtual Machines and SQL // Andy Roberts</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.102.3" />
+    <meta name="generator" content="Hugo 0.120.3">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="Andy Roberts" />
     <meta name="description" content="" />
@@ -144,8 +144,8 @@ There are multiple ways to do backups depending where your data lives. Veeam, Ba
 </span></span><span style="display:flex;"><span>$myLocation = <span style="color:#e6db74">&#34;australiaeast&#34;</span>
 </span></span><span style="display:flex;"><span>$myClient = <span style="color:#e6db74">&#34;myclient&#34;</span>
 </span></span><span style="display:flex;"><span>$myEnvironment = <span style="color:#e6db74">&#34;test&#34;</span>
-</span></span><span style="display:flex;"><span>$myRSG = <span style="color:#e6db74">&#34;$myEnvironment-$myLocation-$myClient&#34;</span>
-</span></span><span style="display:flex;"><span>$myBackupVaultName = <span style="color:#e6db74">&#34;$myEnvironment-$myLocation-$myClient-backup-vault&#34;</span>
+</span></span><span style="display:flex;"><span>$myRSG = <span style="color:#e6db74">&#34;</span>$myEnvironment<span style="color:#e6db74">-</span>$myLocation<span style="color:#e6db74">-</span>$myClient<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>$myBackupVaultName = <span style="color:#e6db74">&#34;</span>$myEnvironment<span style="color:#e6db74">-</span>$myLocation<span style="color:#e6db74">-</span>$myClient<span style="color:#e6db74">-backup-vault&#34;</span>
 </span></span><span style="display:flex;"><span>$myBackupTime = Get-Date -Date <span style="color:#e6db74">&#34;2021-02-1 22:00:00Z&#34;</span> <span style="color:#75715e"># This gets converted to UTC for local 1am</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">########################################################################################</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># Set your Global Details Here</span>
@@ -153,10 +153,10 @@ There are multiple ways to do backups depending where your data lives. Veeam, Ba
 </span></span><span style="display:flex;"><span>$mySQLBackupPolicyName = <span style="color:#e6db74">&#34;MySQLBackupPolicy&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># VM Backup Cycle</span>
-</span></span><span style="display:flex;"><span>$DailyBackupCount = 7
-</span></span><span style="display:flex;"><span>$WeeklyBackupCount = 4
-</span></span><span style="display:flex;"><span>$MonthlyBackupCount = 12
-</span></span><span style="display:flex;"><span>$YearlyBackupCount = 2
+</span></span><span style="display:flex;"><span>$DailyBackupCount = <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>$WeeklyBackupCount = <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>$MonthlyBackupCount = <span style="color:#ae81ff">12</span>
+</span></span><span style="display:flex;"><span>$YearlyBackupCount = <span style="color:#ae81ff">2</span>
 </span></span><span style="display:flex;"><span>$MonthlyDayOfWeek = <span style="color:#e6db74">&#34;Sunday&#34;</span>
 </span></span><span style="display:flex;"><span>$MonthlyWeek = <span style="color:#e6db74">&#34;Last&#34;</span>
 </span></span><span style="display:flex;"><span>$YearlyMonth = <span style="color:#e6db74">&#34;January&#34;</span>
@@ -207,7 +207,7 @@ There are multiple ways to do backups depending where your data lives. Veeam, Ba
 </span></span><span style="display:flex;"><span>$myBackupPolicyName = $myBackupPolicyName
 </span></span><span style="display:flex;"><span>$schPol = Get-AzRecoveryServicesBackupSchedulePolicyObject -WorkloadType <span style="color:#e6db74">&#34;AzureVM&#34;</span>
 </span></span><span style="display:flex;"><span>$UtcTime = $myBackupTime.ToUniversalTime()
-</span></span><span style="display:flex;"><span>$schpol.ScheduleRunTimes[0] = $UtcTime
+</span></span><span style="display:flex;"><span>$schpol.ScheduleRunTimes[<span style="color:#ae81ff">0</span>] = $UtcTime
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># Create the Protection Policy</span>
 </span></span><span style="display:flex;"><span>$retPol = Get-AzRecoveryServicesBackupRetentionPolicyObject -WorkloadType <span style="color:#e6db74">&#34;AzureVM&#34;</span>
@@ -234,14 +234,14 @@ There are multiple ways to do backups depending where your data lives. Veeam, Ba
 <p>First it will create the SQL backup policy, enabling Log backups if you set it earlier in the variables, and likewise doing daily differentials.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>$sqlschPol = Get-AzRecoveryServicesBackupSchedulePolicyObject -WorkloadType <span style="color:#e6db74">&#34;MSSQL&#34;</span>
 </span></span><span style="display:flex;"><span>$sqlretPol = Get-AzRecoveryServicesBackupRetentionPolicyObject -WorkloadType <span style="color:#e6db74">&#34;MSSQL&#34;</span>
-</span></span><span style="display:flex;"><span>$SQLmyBackupTime = ($myBackupTime).AddHours(3) <span style="color:#75715e"># Set to 3hr after the backup job time</span>
+</span></span><span style="display:flex;"><span>$SQLmyBackupTime = ($myBackupTime).AddHours(<span style="color:#ae81ff">3</span>) <span style="color:#75715e"># Set to 3hr after the backup job time</span>
 </span></span><span style="display:flex;"><span>$sqlUtcTime = $SQLmyBackupTime.ToUniversalTime()
-</span></span><span style="display:flex;"><span>$sqlschpol.FullBackupSchedulePolicy.ScheduleRunTimes[0] = $sqlUtcTime
-</span></span><span style="display:flex;"><span>$sqlschpol.DifferentialBackupSchedulePolicy.ScheduleRunTimes[0] = $sqlUtcTime
+</span></span><span style="display:flex;"><span>$sqlschpol.FullBackupSchedulePolicy.ScheduleRunTimes[<span style="color:#ae81ff">0</span>] = $sqlUtcTime
+</span></span><span style="display:flex;"><span>$sqlschpol.DifferentialBackupSchedulePolicy.ScheduleRunTimes[<span style="color:#ae81ff">0</span>] = $sqlUtcTime
 </span></span><span style="display:flex;"><span>$sqlschpol.IsCompression = $NULL
 </span></span><span style="display:flex;"><span>$sqlschpol.FullBackupSchedulePolicy.ScheduleRunFrequency = $sqlFullBackupFrequency
 </span></span><span style="display:flex;"><span>$sqlschpol.FullBackupSchedulePolicy.ScheduleRunDays = $sqlFullBackupFrequencyDay
-</span></span><span style="display:flex;"><span>$sqlschpol.FullBackupSchedulePolicy.ScheduleRunTimes[0] = $sqlUtcTime
+</span></span><span style="display:flex;"><span>$sqlschpol.FullBackupSchedulePolicy.ScheduleRunTimes[<span style="color:#ae81ff">0</span>] = $sqlUtcTime
 </span></span><span style="display:flex;"><span>$sqlretPol.FullBackupRetentionPolicy.IsDailyScheduleEnabled = $NULL <span style="color:#75715e"># This has to be null, not false like the other scheduleenabled ones! Goodbye 2hrs figuring that out!</span>
 </span></span><span style="display:flex;"><span>$sqlretPol.FullBackupRetentionPolicy.DailySchedule = $NULL
 </span></span><span style="display:flex;"><span>$sqlretPol.FullBackupRetentionPolicy.WeeklySchedule.DurationCountInWeeks = $sqlWeeklyCount
@@ -264,7 +264,7 @@ There are multiple ways to do backups depending where your data lives. Veeam, Ba
 </span></span><span style="display:flex;"><span>$sqlschpol.DifferentialBackupSchedulePolicy.ScheduleRunDays += <span style="color:#e6db74">&#34;Thursday&#34;</span>
 </span></span><span style="display:flex;"><span>$sqlschpol.DifferentialBackupSchedulePolicy.ScheduleRunDays += <span style="color:#e6db74">&#34;Friday&#34;</span>
 </span></span><span style="display:flex;"><span>$sqlschpol.DifferentialBackupSchedulePolicy.ScheduleRunDays += <span style="color:#e6db74">&#34;Saturday&#34;</span>
-</span></span><span style="display:flex;"><span>$sqlschpol.DifferentialBackupSchedulePolicy.ScheduleRunTimes[0] = $sqlUtcTime
+</span></span><span style="display:flex;"><span>$sqlschpol.DifferentialBackupSchedulePolicy.ScheduleRunTimes[<span style="color:#ae81ff">0</span>] = $sqlUtcTime
 </span></span><span style="display:flex;"><span>$sqlretPol.DifferentialBackupRetentionPolicy.RetentionDurationType = <span style="color:#e6db74">&#34;Days&#34;</span>
 </span></span><span style="display:flex;"><span>$sqlretPol.DifferentialBackupRetentionPolicy.RetentionCount = <span style="color:#e6db74">&#34;7&#34;</span>
 </span></span><span style="display:flex;"><span>$sqlschpol.IsLogBackupEnabled = $sqlLogBackupEnabled
