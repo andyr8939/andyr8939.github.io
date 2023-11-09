@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Using Velero for AKS Cross Region Disaster Recovery // Andy Roberts</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.102.3" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Andy Roberts" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://www.andyroberts.nz/css/main.min.4a7ec8660f9a44b08c4da97c5f2e31b1192df1d4d0322e65c0dbbc6ecb1b863f.css" />
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SD58B2M7HG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-SD58B2M7HG', { 'anonymize_ip': false });
+}
+</script>
+
+    <meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://www.andyroberts.nz/new_blog_twitter_thumbnail.jpg"/>
+
+<meta name="twitter:title" content="Using Velero for AKS Cross Region Disaster Recovery"/>
+<meta name="twitter:description" content="It&rsquo;s been a while since I wrote a blog post, but I wanted to jump back in again with big one, Disaster Recovery!
+Traditionally with DR in a Virtual Machine infrastructure, you would replicate the VMs/Disks etc to your DR location, and when you initial a failover you simply start them up. This works well in a VM environment because you would normally spend a fair amount of time configuring them, either manually (I hope not) or with Automation, but either way its time consuming but well understood."/>
+
+    <meta property="og:title" content="Using Velero for AKS Cross Region Disaster Recovery" />
+<meta property="og:description" content="It&rsquo;s been a while since I wrote a blog post, but I wanted to jump back in again with big one, Disaster Recovery!
+Traditionally with DR in a Virtual Machine infrastructure, you would replicate the VMs/Disks etc to your DR location, and when you initial a failover you simply start them up. This works well in a VM environment because you would normally spend a fair amount of time configuring them, either manually (I hope not) or with Automation, but either way its time consuming but well understood." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.andyroberts.nz/posts/velero-aks-regional-dr/" /><meta property="og:image" content="https://www.andyroberts.nz/new_blog_twitter_thumbnail.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-11-05T11:00:00+13:00" />
+<meta property="article:modified_time" content="2023-11-05T11:00:00+13:00" />
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://www.andyroberts.nz"><img class="app-header-avatar" src="/profile.jpg" alt="Andy Roberts" /></a>
+      <h1>Andy Roberts</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">Home</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/posts/">Posts</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tags/">Tags</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/about/">About</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/cv/">CV</a>
+      </nav>
+      <p>Blogging about all things Azure, AWS, Automation &amp; Cloud</p>
+      <div class="app-header-social">
+        
+          <a href="https://twitter.com/andyr2319" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>Twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg>
+          </a>
+        
+          <a href="https://www.linkedin.com/in/andy-roberts8939/" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>LinkedIn</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg>
+          </a>
+        
+          <a href="https://github.com/andyr8939" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>Github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+          </a>
+        
+          <a href="mailto:andyr8939@gmail.com" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-mail">
+  <title>email</title>
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Using Velero for AKS Cross Region Disaster Recovery</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Nov 5, 2023
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          8 min read
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>It&rsquo;s been a while since I wrote a blog post, but I wanted to jump back in again with big one, <strong>Disaster Recovery</strong>!</p>
+<p>Traditionally with DR in a Virtual Machine infrastructure, you would replicate the VMs/Disks etc to your DR location, and when you initial a failover you simply start them up.  This works well in a VM environment because you would normally spend a fair amount of time configuring them, either manually (I hope not) or with Automation, but either way its time consuming but well understood.</p>
+<p>But what about Containers and Kubernetes?</p>
+<p>The most common answer when you talk about Kubernetes and backups/DR is, don&rsquo;t bother, just redeploy.  That does make sense in some instances such as if your application is totally stateless and its easy to deploy, but what happens if you have many different products, deployed by different tools and possibly by different teams?  It was this exact challenge I faced recently, and then to add to the mix, I needed to have Disaster Recovery in a totally different Azure Region (and country in some cases).  How do you do that?</p>
+<p>For me, the tool I found which fit this best was <a href="https://velero.io">Velero</a></p>
+<h2 id="how-does-it-work">How does it work</h2>
+<p>Velero is an OSS tool from VMWare and is designed for backup and disaster recovery of any Kubernetes, be it bare metal or Cloud Managed like AWS, Azure and GCP.  It stores its data on object storage like Azure Blob, AWS S3 etc or even virtual disk images, and authentication is available in many forms.  For instance with Azure Blob Storage you can authenticate with Access Keys, Managed Identity and even Workload Identity.  It also support backup and restore to different clusters than the source, and crucially for me, the restore isn&rsquo;t region dependant, so you can use it for multi region DR or migrations.</p>
+<p>You install Velero on each cluster via Helm chart, give it connection details to your storage for backups, and then setup backups with a CLI tool you run locally.</p>
+<p>Azure Backup actually has started to use Velero as its Kubernetes backup tool, however as of November 2023 this only support restores to clusters in the same region as the original backup.</p>
+<h2 id="lets-try-this-out">Lets try this out.</h2>
+<p>You are going to need a few items.</p>
+<ul>
+<li>2x AKS Clusters, each if different regions if you want to test multi region restore</li>
+<li>1x Azure Storage Account for Velero</li>
+<li>Velero Client on you laptop to interact with Velero</li>
+</ul>
+<p>If you have some AKS Clusters you can use them, so skip to next step, but if not lets create some.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set your Subscription Context</span>
+</span></span><span style="display:flex;"><span>mySubscription<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Your-Azure-Subscription&#34;</span>
+</span></span><span style="display:flex;"><span>mySubID<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>az account list --query<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;[?name==&#39;</span>$mySubscription<span style="color:#e6db74">&#39;].id | [0]&#34;</span> -o tsv<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>az account set -s $mySubID
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create a shared resource group</span>
+</span></span><span style="display:flex;"><span>myResourceGroup<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;rsg-velero&#34;</span>
+</span></span><span style="display:flex;"><span>myPrimaryLocation<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;australiaeast&#34;</span>
+</span></span><span style="display:flex;"><span>myDRLocation<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;westus2&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>az group create --name $myResourceGroup --location $myPrimaryLocation
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create my two test clusters</span>
+</span></span><span style="display:flex;"><span>myPrimaryCluster<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;aks-1&#34;</span>
+</span></span><span style="display:flex;"><span>myDRCluster<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;aks-2&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Primary Cluster</span>
+</span></span><span style="display:flex;"><span>az aks create --resource-group $myResourceGroup --location $myPrimaryLocation <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --name $myPrimaryCluster <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --node-count <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --node-vm-size Standard_B2ms
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># DR Cluster</span>
+</span></span><span style="display:flex;"><span>az aks create --resource-group $myResourceGroup --location $myDRLocation <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --name $myDRCluster <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --node-count <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --node-vm-size Standard_B2ms
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check both clusters are created</span>
+</span></span><span style="display:flex;"><span>az aks list --resource-group $myResourceGroup --output table
+</span></span></code></pre></div><p>You will then end up with a couple of clusters.</p>
+<p><img src="../../static/images/velero-blog-1.png" alt="aks_clusters"></p>
+<p>So, now you have a couple of AKS clusters in a resource group ready to go, but Velero needs a location to store config/backups etc.  You can use lots of options for this, but the one I found to be the easiest to setup with AKS with a regular Azure Storage Account, so lets create on.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Setup Storage Account Resource Group</span>
+</span></span><span style="display:flex;"><span>veleroStorageAccount<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;stvelerotest123&#34;</span>
+</span></span><span style="display:flex;"><span>veleroStorageContainer<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;velero&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>az group create -n $myResourceGroup --location $myPrimaryLocation
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Setup Storage Account</span>
+</span></span><span style="display:flex;"><span>az storage account create <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--name $veleroStorageAccount <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--resource-group $myResourceGroup <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--sku Standard_GRS <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--encryption-services blob <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--https-only true <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--kind BlobStorage <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--access-tier Hot
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Setup Container</span>
+</span></span><span style="display:flex;"><span>az storage container create -n $veleroStorageContainer --public-access off --account-name $veleroStorageAccount
+</span></span></code></pre></div><p>Once your Storage Account is setup, Velero needs a way to connect to it.  You can do this with several options such as</p>
+<ul>
+<li>Storage Access Key</li>
+<li>Managed Identity</li>
+<li>Workload Identity</li>
+</ul>
+<p>This obviously depends on your workload requirement but for cross region cluster DR I found that Storage Access Key works the quickest, and its the fastest to test.  Now as its a secret you wouldn&rsquo;t commit this to any form of source control, but Velero has the method during install to take these secret values from a file.  What I do in production is deploy Velero with an Azure DevOps Pipeline and during deployment I have it pull this secret the same as below and update Velero each time, so if I ever need to roll the keys I just redeploy Velero and it takes the latest secret.  So lets generate the secret and file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Get the Storage Account Key for the Velero Blob.</span>
+</span></span><span style="display:flex;"><span>VELERO_STORAGE_ACCESS_KEY<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>az storage account keys list --account-name $veleroStorageAccount --resource-group $myResourceGroup --query <span style="color:#e6db74">&#34;[0].value&#34;</span> -o tsv<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Add the Storage Account Key to the Credentials File</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt; EOF  &gt; ./credentials-velero
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">AZURE_STORAGE_ACCOUNT_ACCESS_KEY=${VELERO_STORAGE_ACCESS_KEY}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">AZURE_CLOUD_NAME=AzurePublicCloud
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span></code></pre></div><p>You should end up with a file like this.
+<img src="../../static/images/velero-blog-2.png" alt="blob_access"></p>
+<h2 id="velero-client-install">Velero Client Install</h2>
+<p>If that has all worked, you now need to deploy Velero to your clusters, but first lets (download the Velero Client)[https://velero.io/docs/main/basic-install/#install-the-cli]. as you need this to interact with Velero and you will see how it looks without the cluster setup.  From that link take whatever is appropriate for your OS, but for me lets do it on Ubuntu.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wget https://github.com/vmware-tanzu/velero/releases/download/v1.12.1/velero-v1.12.1-linux-amd64.tar.gz
+</span></span><span style="display:flex;"><span>tar -xvf velero-v1.12.1-linux-amd64.tar.gz
+</span></span><span style="display:flex;"><span>mv velero-v1.12.1-linux-amd64/velero /usr/local/bin
+</span></span></code></pre></div><p>With the Velero client running locally you can run a version check which will show you the version of your client and your server.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># First connect to our cluster</span>
+</span></span><span style="display:flex;"><span>az aks get-credentials -n $myPrimaryCluster -g $myResourceGroup
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Then check Velero</span>
+</span></span><span style="display:flex;"><span>velero version
+</span></span></code></pre></div><p>You&rsquo;ll get this below, which means Velero isn&rsquo;t running on your cluster yet.</p>
+<p><img src="../../static/images/velero-blog-3.png" alt="velero_client"></p>
+<p>So lets fix that.</p>
+<h2 id="velero-server-install">Velero Server Install</h2>
+<p>Installing Velero can be done with the Velero CLI which I&rsquo;ll show below, or with <a href="https://github.com/vmware-tanzu/helm-charts/blob/main/charts/velero/values.yaml">Helm Charts</a> which is what I use in production, but for now we&rsquo;ll install with the CLI as its easier to understand.</p>
+<p><strong><em>You need to perform this config on both clusters!</em></strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./velero install <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --provider azure <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --plugins velero/velero-plugin-for-microsoft-azure:v1.8.1 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --bucket $veleroStorageContainer <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --secret-file ./credentials-velero <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --backup-location-config resourceGroup<span style="color:#f92672">=</span>$myResourceGroup,storageAccount<span style="color:#f92672">=</span>$veleroStorageAccount,storageAccountKeyEnvVar<span style="color:#f92672">=</span>AZURE_STORAGE_ACCOUNT_ACCESS_KEY,subscriptionId<span style="color:#f92672">=</span>$mySubID <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --use-volume-snapshots<span style="color:#f92672">=</span>false
+</span></span></code></pre></div><p>Now when you run a version check you should see Client and Server are correct.</p>
+<p><img src="../../static/images/velero-blog-4.png" alt="velero_version"></p>
+<p>Next you need to check if your backup storage, which is the Storage Account created earlier is working.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>velero backup-location get
+</span></span></code></pre></div><p><img src="../../static/images/velero-blog-5.png" alt="velero_storage"></p>
+<p>If you <em>Phase</em> shows as <strong>Available</strong> then you have setup the base requirements for Velero.</p>
+<h2 id="create-a-backup-and-backup-schedule">Create a Backup and Backup Schedule</h2>
+<p>To create a backup with Velero, you configure this with the CLI tool and you can crete a schedule or one-off backups.  I&rsquo;ll setup both below, but first lets verify we have something to backup and only in one cluster, so I have setup a couple of demo pods and a service etc in my AKS-1 cluster, but you can see below that nothing exists on my AKS-2 cluster.</p>
+<p><img src="../../static/images/velero-blog-6.png" alt="velero_base_setup"></p>
+<p>First then lets create a scheduled backup on AKS-1.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>velero schedule create <span style="color:#e6db74">&#34;test-schedule&#34;</span> --schedule<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0 0-23 * * *&#34;</span> --include-namespaces test --exclude-resources persistentvolumes --ttl 24h0m0s
+</span></span><span style="display:flex;"><span>velero get schedule
+</span></span></code></pre></div><p>This has given us a schedule called &ldquo;<strong>test-schedule</strong> which will run every hour and backup the <strong>test</strong> namespace, and you can see that in the results.</p>
+<p><img src="../../static/images/velero-blog-7.png" alt="velero_schedule"></p>
+<p>If we want to execute a backup straight away from that schedule, we run the following.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>velero backup create --from-schedule test-schedule
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># It will output a command to run similar to this</span>
+</span></span><span style="display:flex;"><span>velero backup describe test-schedule-20231109024158
+</span></span></code></pre></div><p>You&rsquo;ll see it runs very fast but like above you&rsquo;ll end up with something like this.</p>
+<p><img src="../../static/images/velero-blog-8.png" alt="velero_backup"></p>
+<p>OK, there is a lot to unpack here.</p>
+<ul>
+<li>First is the command to create the backup</li>
+<li>Then we see how to describe the backup and get its details</li>
+<li>We can see it Completed</li>
+<li>Look at the elapsed time, 2 seconds&hellip;&hellip;</li>
+<li>24 items were captured as part of this</li>
+</ul>
+<p>That&rsquo;s super impressive!!!  I&rsquo;ve seen Velero on heavily populated clusters with hundreds of objects take no more than 10 seconds to backup as well!</p>
+<p>Off course if you wanted to do an adhoc backup you can, the command for that would be</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>velero backup create my-adhoc-backup <span style="color:#75715e"># This will backup the entire cluster, all resources, all namespaces</span>
+</span></span></code></pre></div><h2 id="time-to-restore">Time to Restore</h2>
+<p>So we have a backup, and lets imagine I have just lost the entire Azure Region and my cluster is dead, I can&rsquo;t access it.   I need to restore to DR, how do I do that?</p>
+<p>This is the beauty I have found with Velero as it is super simple.   First lets change to our DR cluster AKS-2 and try and see what backups we have, but realizing all the backups we did were on AKS-1 and there was nothing running in AKS-2</p>
+<p><img src="../../static/images/velero-blog-9.png" alt="velero_backup_dr"></p>
+<p>OK thats good, I am on my DR cluster with nothing running but I can see my Prod backup from my AKS-1 cluster I took earlier.   Thats working because both clusters are accessing the same Azure Storage Account for backups/restores, so as long as that is GeoRedundant then I am good to go.</p>
+<p>To restore my backup to my new cluster lets try this&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>velero create restore --from-backup test-schedule-20231109024158
+</span></span><span style="display:flex;"><span>velero restore describe test-schedule-20231109024158-20231109025349
+</span></span></code></pre></div><p><img src="../../static/images/velero-blog-10.png" alt="velero_restore_dr"></p>
+<p>That&rsquo;s fast!!!  The restore here took 4 seconds to complete.  That can&rsquo;t be right can it?  Lets check the namespace.</p>
+<p><img src="../../static/images/velero-blog-11.png" alt="velero_restore_complete"></p>
+<p>Everything is there, my pods, service, all the secrets and configmaps etc and everything is running, in a new cluster in a new Azure Region!!  It worked!</p>
+<h2 id="summary">Summary</h2>
+<p>That was just a quick overview of Velero and how you can utilize it for doing multi region DR at a high level with Azure Kubernetes Service.   It was a basic demonstration but the principal is the same if you are doing just a single cluster backup and restore, to cluster migrations, or as demonstrated here, regional disaster recovery of clusters.</p>
+<h2 id="cleanup">Cleanup</h2>
+<p>To remove all the test resources we created, just delete the original resource group.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>az group delete --name $myResourceGroup --yes
+</span></span></code></pre></div>
+    </div>
+    <div class="post-footer">
+      <div id="disqus_thread"></div>
+<script type="application/javascript">
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "andyroberts-nz" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
