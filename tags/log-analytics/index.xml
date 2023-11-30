@@ -5,16 +5,16 @@
     <link>https://www.andyroberts.nz/tags/log-analytics/</link>
     <description>Recent content in log analytics on Andy Roberts</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
-    <lastBuildDate>Tue, 20 Apr 2021 13:59:18 +1200</lastBuildDate>
-    <atom:link href="https://www.andyroberts.nz/tags/log-analytics/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 20 Apr 2021 13:59:18 +1200</lastBuildDate><atom:link href="https://www.andyroberts.nz/tags/log-analytics/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Azure Logic Apps for Application Gateway Reports</title>
       <link>https://www.andyroberts.nz/posts/logic-apps-sharepoint/</link>
       <pubDate>Tue, 20 Apr 2021 13:59:18 +1200</pubDate>
+      
       <guid>https://www.andyroberts.nz/posts/logic-apps-sharepoint/</guid>
       <description>Web Frontend&amp;rsquo;s are probably one of the most used workloads in Cloud today. Your ingress is basically your income for many companies, and technologies used such as Apache, NGINX, IIS mixed with your edge devices make up this stack.
 In my current role we make heavy use of Azure Application Gateways which are L7 HTTP(S) Load Balancers for our web front end. As the products we supply to clients are web based these are a perfect fit for our needs.</description>
     </item>
+    
   </channel>
 </rss>
