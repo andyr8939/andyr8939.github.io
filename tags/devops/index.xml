@@ -5,23 +5,25 @@
     <link>https://www.andyroberts.nz/tags/devops/</link>
     <description>Recent content in devops on Andy Roberts</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
-    <lastBuildDate>Mon, 31 Jan 2022 21:36:09 +1300</lastBuildDate>
-    <atom:link href="https://www.andyroberts.nz/tags/devops/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 31 Jan 2022 21:36:09 +1300</lastBuildDate><atom:link href="https://www.andyroberts.nz/tags/devops/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Creating an AKS Release Pipeline in Azure DevOps</title>
       <link>https://www.andyroberts.nz/posts/aks-cicd-azuredevops/</link>
       <pubDate>Mon, 31 Jan 2022 21:36:09 +1300</pubDate>
+      
       <guid>https://www.andyroberts.nz/posts/aks-cicd-azuredevops/</guid>
       <description>AKS and Kubernetes in general is still fairly new to me, but its something I am using more and more every day. One of the challenges I have faced is that the more I have to deploy to is, is the need for a simple way to deploy a set of apps you need on every cluster, that doesn&amp;rsquo;t involve a complicated solution. I am an &amp;lsquo;Ops&amp;rsquo; guy by trade so creating release artifacts and NuGet packages doesn&amp;rsquo;t come naturally too me.</description>
     </item>
+    
     <item>
       <title>Control Azure Devops Pipelines with Powershell</title>
       <link>https://www.andyroberts.nz/posts/azure-devops-pipelines-powershell/</link>
       <pubDate>Sat, 23 Oct 2021 19:54:08 +1300</pubDate>
+      
       <guid>https://www.andyroberts.nz/posts/azure-devops-pipelines-powershell/</guid>
       <description>Pipelines in Azure DevOps are extremely useful and its something I used daily for Infrastructure Builds with Terraform on Azure and AWS. Normally these are triggered automatically as part of a pull request and merge to main, but there are times when you want to interact manually with them, such as starting or cancelling pipelines in bulk, and this is where this tip comes in handy.
 If you want to start/cancel a single pipeline, via the Azure DevOps portal is quick and easy.</description>
     </item>
+    
   </channel>
 </rss>

@@ -2,7 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.andyroberts.nz/tags/aks/</loc>
+    <lastmod>2023-11-05T11:00:00+13:00</lastmod>
+  </url><url>
     <loc>https://www.andyroberts.nz/</loc>
+    <lastmod>2023-11-05T11:00:00+13:00</lastmod>
+  </url><url>
+    <loc>https://www.andyroberts.nz/tags/azure/</loc>
+    <lastmod>2023-11-05T11:00:00+13:00</lastmod>
+  </url><url>
+    <loc>https://www.andyroberts.nz/tags/backups/</loc>
+    <lastmod>2023-11-05T11:00:00+13:00</lastmod>
+  </url><url>
+    <loc>https://www.andyroberts.nz/tags/disaster-recovery/</loc>
+    <lastmod>2023-11-05T11:00:00+13:00</lastmod>
+  </url><url>
+    <loc>https://www.andyroberts.nz/tags/kubernetes/</loc>
     <lastmod>2023-11-05T11:00:00+13:00</lastmod>
   </url><url>
     <loc>https://www.andyroberts.nz/posts/</loc>
@@ -11,11 +26,8 @@
     <loc>https://www.andyroberts.nz/posts/velero-aks-regional-dr/</loc>
     <lastmod>2023-11-05T11:00:00+13:00</lastmod>
   </url><url>
-    <loc>https://www.andyroberts.nz/tags/aks/</loc>
-    <lastmod>2022-01-31T21:36:09+13:00</lastmod>
-  </url><url>
-    <loc>https://www.andyroberts.nz/tags/azure/</loc>
-    <lastmod>2022-01-31T21:36:09+13:00</lastmod>
+    <loc>https://www.andyroberts.nz/tags/velero/</loc>
+    <lastmod>2023-11-05T11:00:00+13:00</lastmod>
   </url><url>
     <loc>https://www.andyroberts.nz/tags/azure-devops/</loc>
     <lastmod>2022-01-31T21:36:09+13:00</lastmod>
@@ -24,9 +36,6 @@
     <lastmod>2022-01-31T21:36:09+13:00</lastmod>
   </url><url>
     <loc>https://www.andyroberts.nz/tags/devops/</loc>
-    <lastmod>2022-01-31T21:36:09+13:00</lastmod>
-  </url><url>
-    <loc>https://www.andyroberts.nz/tags/kubernetes/</loc>
     <lastmod>2022-01-31T21:36:09+13:00</lastmod>
   </url><url>
     <loc>https://www.andyroberts.nz/tags/pipelines/</loc>

@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-us">
   <head>
     <title>Control Azure Devops Pipelines with Powershell // Andy Roberts</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.120.3">
+    <meta name="generator" content="Hugo 0.102.3" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="Andy Roberts" />
     <meta name="description" content="" />
@@ -141,10 +141,10 @@ If you want to start/cancel a single pipeline, via the Azure DevOps portal is qu
 </span></span><span style="display:flex;"><span>  $myDevOpsProjectName = <span style="color:#e6db74">&#34;ArcReactorProject&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Generate your auth header</span>
-</span></span><span style="display:flex;"><span>  $myDevOpsAuthHeader = @{Authorization = <span style="color:#e6db74">&#39;Basic &#39;</span> + [<span style="color:#66d9ef">Convert</span>]::ToBase64String([<span style="color:#66d9ef">Text.Encoding</span>]::ASCII.GetBytes(<span style="color:#e6db74">&#34;:</span>$($myDevOpsPAT)<span style="color:#e6db74">&#34;</span>)) }
+</span></span><span style="display:flex;"><span>  $myDevOpsAuthHeader = @{Authorization = <span style="color:#e6db74">&#39;Basic &#39;</span> + <span style="color:#66d9ef">[Convert]</span>::ToBase64String(<span style="color:#66d9ef">[Text.Encoding]</span>::ASCII.GetBytes(<span style="color:#e6db74">&#34;:</span>$($myDevOpsPAT)<span style="color:#e6db74">&#34;</span>)) }
 </span></span><span style="display:flex;"><span> 
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Build your URL using your custom variables</span>
-</span></span><span style="display:flex;"><span>  $Uri= https<span style="color:#960050;background-color:#1e0010">:</span>//dev.azure.com/$($myDevOpsOrganization)/$($myDevOpsProjectName)/_apis/build/builds<span style="color:#66d9ef">?</span>statusFilter=notStarted&amp;api-version=<span style="color:#ae81ff">6.0</span>-preview.1
+</span></span><span style="display:flex;"><span>  $Uri= https<span style="color:#960050;background-color:#1e0010">:</span>//dev.azure.com/$($myDevOpsOrganization)/$($myDevOpsProjectName)/_apis/build/builds<span style="color:#66d9ef">?</span>statusFilter=notStarted&amp;api-version=6.0-preview.1
 </span></span><span style="display:flex;"><span> 
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Get all the pending jobs</span>
 </span></span><span style="display:flex;"><span>  $PendingJobs = Invoke-RestMethod -Uri $Uri -Headers $myDevOpsAuthHeader -Method get -ContentType <span style="color:#e6db74">&#34;application/json&#34;</span>
@@ -154,8 +154,8 @@ If you want to start/cancel a single pipeline, via the Azure DevOps portal is qu
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">ForEach</span>($pipeline <span style="color:#66d9ef">in</span> $JobsToCancel)
 </span></span><span style="display:flex;"><span>  {
 </span></span><span style="display:flex;"><span>     $pipeline.status = <span style="color:#e6db74">&#34;Cancelling&#34;</span>
-</span></span><span style="display:flex;"><span>     $body = $pipeline | ConvertTo-Json -Depth <span style="color:#ae81ff">10</span>
-</span></span><span style="display:flex;"><span>     $urlToCancel = https<span style="color:#960050;background-color:#1e0010">:</span>//dev.azure.com/$($myDevOpsOrganization)/$($myDevOpsProjectName)/_apis/build/builds/$($pipeline.id)<span style="color:#66d9ef">?</span>api-version=<span style="color:#ae81ff">6.0</span>-preview.1
+</span></span><span style="display:flex;"><span>     $body = $pipeline | ConvertTo-Json -Depth 10
+</span></span><span style="display:flex;"><span>     $urlToCancel = https<span style="color:#960050;background-color:#1e0010">:</span>//dev.azure.com/$($myDevOpsOrganization)/$($myDevOpsProjectName)/_apis/build/builds/$($pipeline.id)<span style="color:#66d9ef">?</span>api-version=6.0-preview.1
 </span></span><span style="display:flex;"><span>     Invoke-RestMethod -Uri $urlToCancel -Method Patch -ContentType application/json -Body $body -Header $myDevOpsAuthHeader
 </span></span><span style="display:flex;"><span>  }
 </span></span></code></pre></div><h2 id="starting-multiple-pipelines">Starting Multiple Pipelines</h2>
@@ -166,10 +166,10 @@ If you want to start/cancel a single pipeline, via the Azure DevOps portal is qu
 </span></span><span style="display:flex;"><span>  $myDevOpsProjectName = <span style="color:#e6db74">&#34;ArcReactorProject&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Generate your auth header</span>
-</span></span><span style="display:flex;"><span>  $myDevOpsAuthHeader = @{Authorization = <span style="color:#e6db74">&#39;Basic &#39;</span> + [<span style="color:#66d9ef">Convert</span>]::ToBase64String([<span style="color:#66d9ef">Text.Encoding</span>]::ASCII.GetBytes(<span style="color:#e6db74">&#34;:</span>$($myDevOpsPAT)<span style="color:#e6db74">&#34;</span>)) }
+</span></span><span style="display:flex;"><span>  $myDevOpsAuthHeader = @{Authorization = <span style="color:#e6db74">&#39;Basic &#39;</span> + <span style="color:#66d9ef">[Convert]</span>::ToBase64String(<span style="color:#66d9ef">[Text.Encoding]</span>::ASCII.GetBytes(<span style="color:#e6db74">&#34;:</span>$($myDevOpsPAT)<span style="color:#e6db74">&#34;</span>)) }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Build your URL using your custom variables</span>
-</span></span><span style="display:flex;"><span>  $Uri= https<span style="color:#960050;background-color:#1e0010">:</span>//dev.azure.com/$($myDevOpsOrganization)/$($myDevOpsProjectName)/_apis/pipelines<span style="color:#66d9ef">?</span>api-version=<span style="color:#ae81ff">6.0</span>-preview.1
+</span></span><span style="display:flex;"><span>  $Uri= https<span style="color:#960050;background-color:#1e0010">:</span>//dev.azure.com/$($myDevOpsOrganization)/$($myDevOpsProjectName)/_apis/pipelines<span style="color:#66d9ef">?</span>api-version=6.0-preview.1
 </span></span><span style="display:flex;"><span>  
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Get all my Pipelines</span>
 </span></span><span style="display:flex;"><span>  $Pipelines = Invoke-RestMethod -Uri $Uri -Headers $myDevOpsAuthHeader -Method get -ContentType <span style="color:#e6db74">&#34;application/json&#34;</span>
@@ -180,8 +180,8 @@ If you want to start/cancel a single pipeline, via the Azure DevOps portal is qu
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Start all those Pipelines</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">ForEach</span>($pipeline <span style="color:#66d9ef">in</span> $JobsToStart)
 </span></span><span style="display:flex;"><span>  {
-</span></span><span style="display:flex;"><span>     $body = $pipeline | ConvertTo-Json -Depth <span style="color:#ae81ff">10</span>
-</span></span><span style="display:flex;"><span>     $urlToStart = https<span style="color:#960050;background-color:#1e0010">:</span>//dev.azure.com/$($myDevOpsOrganization)/$($myDevOpsProjectName)/_apis/pipelines/$($pipeline.id)/runs<span style="color:#66d9ef">?</span>api-version=<span style="color:#ae81ff">6.0</span>-preview.1
+</span></span><span style="display:flex;"><span>     $body = $pipeline | ConvertTo-Json -Depth 10
+</span></span><span style="display:flex;"><span>     $urlToStart = https<span style="color:#960050;background-color:#1e0010">:</span>//dev.azure.com/$($myDevOpsOrganization)/$($myDevOpsProjectName)/_apis/pipelines/$($pipeline.id)/runs<span style="color:#66d9ef">?</span>api-version=6.0-preview.1
 </span></span><span style="display:flex;"><span>     Invoke-RestMethod -Uri $urlToStart -Method post -ContentType application/json -Body $body -Header $myDevOpsAuthHeader
 </span></span><span style="display:flex;"><span>  }
 </span></span></code></pre></div><p>I hope you find that useful and it saves you as much time as it saves me each day!</p>
