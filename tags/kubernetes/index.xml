@@ -5,34 +5,38 @@
     <link>https://www.andyroberts.nz/tags/kubernetes/</link>
     <description>Recent content in kubernetes on Andy Roberts</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 05 Nov 2023 11:00:00 +1300</lastBuildDate><atom:link href="https://www.andyroberts.nz/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <lastBuildDate>Fri, 25 Oct 2024 20:30:00 +1300</lastBuildDate>
+    <atom:link href="https://www.andyroberts.nz/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CKA Exam Tips</title>
+      <link>https://www.andyroberts.nz/posts/cka/</link>
+      <pubDate>Fri, 25 Oct 2024 20:30:00 +1300</pubDate>
+      <guid>https://www.andyroberts.nz/posts/cka/</guid>
+      <description>The Certified Kubernetes Administrator (CKA) had been on my radar for a while, but my passion for not enjoying exams kept from committing to it. But after running into some curly Kubernetes at work I decided I would give it a try as even if I failed, the learning aspect of it would be most valuable.
+Background - I use Kubernetes, well AKS, A LOT in my day job. I am part of a team which designs/deploys/manages around 30 AKS clusters in many different regions, with lots of different workloads on them, plus also chucking in the dreaded Windows node pools for good measure.</description>
+    </item>
     <item>
       <title>Using Velero for AKS Cross Region Disaster Recovery</title>
       <link>https://www.andyroberts.nz/posts/velero-aks-regional-dr/</link>
       <pubDate>Sun, 05 Nov 2023 11:00:00 +1300</pubDate>
-      
       <guid>https://www.andyroberts.nz/posts/velero-aks-regional-dr/</guid>
       <description>It&amp;rsquo;s been a while since I wrote a blog post, but I wanted to jump back in again with big one, Disaster Recovery!
 Traditionally with DR in a Virtual Machine infrastructure, you would replicate the VMs/Disks etc to your DR location, and when you initial a failover you simply start them up. This works well in a VM environment because you would normally spend a fair amount of time configuring them, either manually (I hope not) or with Automation, but either way its time consuming but well understood.</description>
     </item>
-    
     <item>
       <title>Creating an AKS Release Pipeline in Azure DevOps</title>
       <link>https://www.andyroberts.nz/posts/aks-cicd-azuredevops/</link>
       <pubDate>Mon, 31 Jan 2022 21:36:09 +1300</pubDate>
-      
       <guid>https://www.andyroberts.nz/posts/aks-cicd-azuredevops/</guid>
       <description>AKS and Kubernetes in general is still fairly new to me, but its something I am using more and more every day. One of the challenges I have faced is that the more I have to deploy to is, is the need for a simple way to deploy a set of apps you need on every cluster, that doesn&amp;rsquo;t involve a complicated solution. I am an &amp;lsquo;Ops&amp;rsquo; guy by trade so creating release artifacts and NuGet packages doesn&amp;rsquo;t come naturally too me.</description>
     </item>
-    
     <item>
       <title>HTTPS to AKS with Traefik and Lets Encrypt</title>
       <link>https://www.andyroberts.nz/posts/aks-traefik-https/</link>
       <pubDate>Fri, 04 Jun 2021 15:10:24 +1200</pubDate>
-      
       <guid>https://www.andyroberts.nz/posts/aks-traefik-https/</guid>
       <description>I&amp;rsquo;ll preface this blog post with the fact that I am FAR FAR away from any kind of expert on Kubernetes and AKS. I am still very early in my journey with it, and a lot of my experience so far is trial and error. I have also found that there is a lot of documentation out there on how to do things, but a lot of it assumes a fairly decent knowledge of how everything sticks together, so for a newbie to Kubernetes it can be quite challenging.</description>
     </item>
-    
   </channel>
 </rss>

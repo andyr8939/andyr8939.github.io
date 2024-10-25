@@ -5,15 +5,15 @@
     <link>https://www.andyroberts.nz/tags/traefik/</link>
     <description>Recent content in traefik on Andy Roberts</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 04 Jun 2021 15:10:24 +1200</lastBuildDate><atom:link href="https://www.andyroberts.nz/tags/traefik/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <lastBuildDate>Fri, 04 Jun 2021 15:10:24 +1200</lastBuildDate>
+    <atom:link href="https://www.andyroberts.nz/tags/traefik/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>HTTPS to AKS with Traefik and Lets Encrypt</title>
       <link>https://www.andyroberts.nz/posts/aks-traefik-https/</link>
       <pubDate>Fri, 04 Jun 2021 15:10:24 +1200</pubDate>
-      
       <guid>https://www.andyroberts.nz/posts/aks-traefik-https/</guid>
       <description>I&amp;rsquo;ll preface this blog post with the fact that I am FAR FAR away from any kind of expert on Kubernetes and AKS. I am still very early in my journey with it, and a lot of my experience so far is trial and error. I have also found that there is a lot of documentation out there on how to do things, but a lot of it assumes a fairly decent knowledge of how everything sticks together, so for a newbie to Kubernetes it can be quite challenging.</description>
     </item>
-    
   </channel>
 </rss>

@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>CKA Exam Tips // Andy Roberts</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.120.3">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Andy Roberts" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://www.andyroberts.nz/css/main.min.4a7ec8660f9a44b08c4da97c5f2e31b1192df1d4d0322e65c0dbbc6ecb1b863f.css" />
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SD58B2M7HG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-SD58B2M7HG', { 'anonymize_ip': false });
+}
+</script>
+
+    <meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://www.andyroberts.nz/new_blog_twitter_thumbnail.jpg"/>
+
+<meta name="twitter:title" content="CKA Exam Tips"/>
+<meta name="twitter:description" content="The Certified Kubernetes Administrator (CKA) had been on my radar for a while, but my passion for not enjoying exams kept from committing to it. But after running into some curly Kubernetes at work I decided I would give it a try as even if I failed, the learning aspect of it would be most valuable.
+Background - I use Kubernetes, well AKS, A LOT in my day job. I am part of a team which designs/deploys/manages around 30 AKS clusters in many different regions, with lots of different workloads on them, plus also chucking in the dreaded Windows node pools for good measure."/>
+
+    <meta property="og:title" content="CKA Exam Tips" />
+<meta property="og:description" content="The Certified Kubernetes Administrator (CKA) had been on my radar for a while, but my passion for not enjoying exams kept from committing to it. But after running into some curly Kubernetes at work I decided I would give it a try as even if I failed, the learning aspect of it would be most valuable.
+Background - I use Kubernetes, well AKS, A LOT in my day job. I am part of a team which designs/deploys/manages around 30 AKS clusters in many different regions, with lots of different workloads on them, plus also chucking in the dreaded Windows node pools for good measure." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.andyroberts.nz/posts/cka/" /><meta property="og:image" content="https://www.andyroberts.nz/new_blog_twitter_thumbnail.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-10-25T20:30:00+13:00" />
+<meta property="article:modified_time" content="2024-10-25T20:30:00+13:00" />
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://www.andyroberts.nz"><img class="app-header-avatar" src="/profile.jpg" alt="Andy Roberts" /></a>
+      <h1>Andy Roberts</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">Home</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/posts/">Posts</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tags/">Tags</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/about/">About</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/cv/">CV</a>
+      </nav>
+      <p>Blogging about all things Azure, AWS, Automation &amp; Cloud</p>
+      <div class="app-header-social">
+        
+          <a href="https://twitter.com/andyr8939" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>Twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg>
+          </a>
+        
+          <a href="https://www.linkedin.com/in/andy-roberts8939/" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>LinkedIn</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg>
+          </a>
+        
+          <a href="https://github.com/andyr8939" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>Github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+          </a>
+        
+          <a href="mailto:andyr8939@gmail.com" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-mail">
+  <title>email</title>
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">CKA Exam Tips</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Oct 25, 2024
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          6 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line>
+</svg>
+              <a class="tag" href="https://www.andyroberts.nz/tags/kubernetes/">kubernetes</a>
+              <a class="tag" href="https://www.andyroberts.nz/tags/cka/">cka</a>
+              <a class="tag" href="https://www.andyroberts.nz/tags/certification/">certification</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>The Certified Kubernetes Administrator (CKA) had been on my radar for a while, but my passion for not enjoying exams kept from committing to it.  But after running into some curly Kubernetes at work I decided I would give it a try as even if I failed, the learning aspect of it would be most valuable.</p>
+<p>Background - I use Kubernetes, well AKS, <strong>A LOT</strong> in my day job.  I am part of a team which designs/deploys/manages around 30 AKS clusters in many different regions, with lots of different workloads on them, plus also chucking in the dreaded Windows node pools for good measure.   So while I am using Kubernetes daily, its very easy to stick to the familiar and not get exposed to the inner workings of Kubernetes, and get into a routing with the GUIs of K9s, Lens etc.  This was the main benefit to me of doing CKA.</p>
+<h2 id="training-material">Training Material</h2>
+<p>Everyone recommends the ( Mumshad Mannambeth Udemy Course)[https://www.udemy.com/course/certified-kubernetes-administrator-with-practice-tests/?couponCode=ST14MT101024], and I am not going to be any different here.  It really is a fantastic course.   Even if you already use Kubernetes, go through it from start to finish, and do all the labs several times.   The KodeKloud Platform that the labs are on is extremely well done and responsive.   I especially liked the labs around ETCD as this isn&rsquo;t something you are going to touch in Managed Kubernetes Environments.</p>
+<h2 id="documentation">Documentation</h2>
+<p>You&rsquo;ll already know this if you are looking at CKA, but the exam allows you to use the (Official Kubernetes Documentation)[https://kubernetes.io/docs/home/].</p>
+<ul>
+<li>Get good at finding your way around.
+<ul>
+<li>Keywords and phrases, eg, kubeadm upgrade, etcd restore.</li>
+</ul>
+</li>
+<li>Solve the Labs in Udemy by using the docs.</li>
+<li>Get as much YAML as you can from the docs, don&rsquo;t build by hand.</li>
+</ul>
+<p>Although I use the docs frequency in my job, doing CKA dialed this up to 11 for me.</p>
+<h2 id="kubeadm">KubeADM</h2>
+<p>If you use managed Kubernetes like AKS/EKS/GKE then you won&rsquo;t be exposed to this and it&rsquo;s part of the exam structure, especially upgrading clusters with Kubeadm.   Do the labs in the Udemy course then build your own clusters with Kubeadm and upgrade it.  Do it again.</p>
+<h2 id="etcd">ETCD</h2>
+<p>ETCD is the key value store at the heart of Kubernetes, and it does form part of the exam.  Again, if you used managed Kubernetes you are not going to be doing much with this so its important to learn it.   I was initially completely lost with this and almost chalked it up to &ldquo;<em>I&rsquo;ll skip this in the exam</em>&rdquo;, but stuck with it and found it really useful.</p>
+<ul>
+<li>Build a cluster</li>
+<li>Backup etcd</li>
+<li>Create some objects</li>
+<li>Restore etcd and see if the new objects have gone</li>
+</ul>
+<h2 id="shortcuts">Shortcuts</h2>
+<p>Don&rsquo;t stress when you see posts about the exam telling you to input lots of shortcuts, it&rsquo;s not required as long as you are comfortable with the cmdline and kubectl.  The exam environment also has the most used k for kubectl already configured, but there are a few I found useful to setup at the start as I used them a lot.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>alias exam<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;grep Examples -A20&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># kubectl run --help | exam</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># This will quickly get you just the examples for the command</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>export dryrun<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;--dry-run=client -o yaml&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># kubectl run web --image=nginx $do &gt; web.yaml</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Don&#39;t create a pod, but create the yaml for it instead</span>
+</span></span></code></pre></div><h2 id="vim">VIM</h2>
+<p>Not related to the CKA or Kubernetes, but getting quick in VIM is really beneficial in the exam.  You can use Nano if you like but I am old school and prefer VIM.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> $ <span style="color:#75715e"># to go to end of the line</span>
+</span></span><span style="display:flex;"><span> a <span style="color:#75715e"># to append from the cursor</span>
+</span></span><span style="display:flex;"><span> D <span style="color:#75715e"># to delete from the cursor to the end of the line</span>
+</span></span><span style="display:flex;"><span> uu <span style="color:#75715e"># to undo the last action </span>
+</span></span></code></pre></div><h2 id="killersh">Killer.sh</h2>
+<p>You get 2 sessions to (killer.sh)[https://killer.sh] when you purchase the exam.   For me I did all the Udemy course and labs first, then did the Killer.Sh first attempt immediately after.   Now the difficulty here is dialled up to 11, it&rsquo;s massive!</p>
+<p>For example if in the Udemy course it says &ldquo;create a pod with the nginx image&rdquo; in a lab.  The killer.sh equivalent question would be &ldquo;create a pod with 4 containers, sharing a pv and have each one use a different environment variable, read logs from the previous container and then launch a SpaceX rocket!&rdquo;.</p>
+<p>It was eye opening and a little scary the first time.  I went from sailing through the Udemy labs to getting 20% on my first killer.sh try.  It did defeat me a bit.  So I took my time, read through the docs and tried it again a week later after practicing a lot.   That time I finished all the labs with 20mins to spare and scored 100%.</p>
+<p>Personally, Killer.Sh was the best part of the CKA, it really makes you think.   The exam is nowhere near as hard but the structure of the questions is much closer to Killer.Sh than the Udemy course, so its good prep.</p>
+<h2 id="exam-time">Exam Time</h2>
+<p>I&rsquo;ve taken a lot of exams over the years, all proctored so I was not expecting any issues with the CKA&hellip;. but it was my worst experience.</p>
+<p>I joined 15 mins before my scheduled time and was placed in the queue, with my exam to start at 08:30.  A proctor finally arrived at 09:05 then proceeded to utterly rip apart everything in my home office.  I&rsquo;d already taken down all pictures and cleared my desk but they ripped the following apart</p>
+<ul>
+<li>Remove mouse pad</li>
+<li>Remove head rest of chair&hellip;..</li>
+<li>Remove my printer from behind me</li>
+<li>Wanted me to remove my USB-C Dock (I refused)</li>
+<li>Said I couldn&rsquo;t use my MacBook Pro with the screen open (disabled) even though I passed the multiple screen pre-check
+<ul>
+<li>I refused and they let me continue</li>
+</ul>
+</li>
+<li>Made me disconnect and remove the speakers on my monitor</li>
+<li>Didn&rsquo;t like my headphone mount on my desk</li>
+<li>My clear glass of water wasn&rsquo;t clear enough (it was slightly frosted)</li>
+<li>And it went on&hellip;</li>
+</ul>
+<p>They were finally happy after an hour of messing around so my exam scheduled for 08:30 started at 10:15!!!!  I filled a complaint immediately after but have not heard anything back.</p>
+<p>The exam itself was fine though by VERY laggy.  I have wired gigabit fibre and have never had issues with any exam before but this one lagged a lot of times, but I had enough time to finish.</p>
+<p>Getting the results says 24hrs but it took 3 days, and I passed.  I can only think of 2 questions I know I failed, one of them I struggled to understand the question, and another I think was fundamentally broken.   I couldn&rsquo;t make it work when I knew it was right, so once I finished the exam I tried it in my lab and it worked straight away so unsure if I was missing something or it was a broken question.</p>
+<h2 id="summary">Summary</h2>
+<p>The journey with CKA really is better than the destination.   You&rsquo;ll learn a lot by doing it, especially if you are new to Kubernetes, but even if you are not new like me, it will force you to get exposed to areas you really won&rsquo;t touch if you are using Managed Kubernetes like AKS and EKS.</p>
+<p>Good luck and enjoy the learning journey!</p>
+<p>Andy</p>
+
+    </div>
+    <div class="post-footer">
+      <div id="disqus_thread"></div>
+<script type="application/javascript">
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "andyroberts-nz" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
