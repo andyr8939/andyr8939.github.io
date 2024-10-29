@@ -5,114 +5,102 @@
     <link>https://www.andyroberts.nz/</link>
     <description>Recent content on Andy Roberts</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 05 Nov 2023 11:00:00 +1300</lastBuildDate><atom:link href="https://www.andyroberts.nz/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <lastBuildDate>Fri, 25 Oct 2024 20:30:00 +1300</lastBuildDate>
+    <atom:link href="https://www.andyroberts.nz/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CKA Exam Tips</title>
+      <link>https://www.andyroberts.nz/posts/cka/</link>
+      <pubDate>Fri, 25 Oct 2024 20:30:00 +1300</pubDate>
+      <guid>https://www.andyroberts.nz/posts/cka/</guid>
+      <description>The Certified Kubernetes Administrator (CKA) had been on my radar for a while, but my passion for not enjoying exams kept from committing to it. But after running into some curly Kubernetes at work I decided I would give it a try as even if I failed, the learning aspect of it would be most valuable.
+Background - I use Kubernetes, well AKS, A LOT in my day job. I am part of a team which designs/deploys/manages around 30 AKS clusters in many different regions, with lots of different workloads on them, plus also chucking in the dreaded Windows node pools for good measure.</description>
+    </item>
     <item>
       <title>Using Velero for AKS Cross Region Disaster Recovery</title>
       <link>https://www.andyroberts.nz/posts/velero-aks-regional-dr/</link>
       <pubDate>Sun, 05 Nov 2023 11:00:00 +1300</pubDate>
-      
       <guid>https://www.andyroberts.nz/posts/velero-aks-regional-dr/</guid>
       <description>It&amp;rsquo;s been a while since I wrote a blog post, but I wanted to jump back in again with big one, Disaster Recovery!
 Traditionally with DR in a Virtual Machine infrastructure, you would replicate the VMs/Disks etc to your DR location, and when you initial a failover you simply start them up. This works well in a VM environment because you would normally spend a fair amount of time configuring them, either manually (I hope not) or with Automation, but either way its time consuming but well understood.</description>
     </item>
-    
     <item>
       <title>Creating an AKS Release Pipeline in Azure DevOps</title>
       <link>https://www.andyroberts.nz/posts/aks-cicd-azuredevops/</link>
       <pubDate>Mon, 31 Jan 2022 21:36:09 +1300</pubDate>
-      
       <guid>https://www.andyroberts.nz/posts/aks-cicd-azuredevops/</guid>
       <description>AKS and Kubernetes in general is still fairly new to me, but its something I am using more and more every day. One of the challenges I have faced is that the more I have to deploy to is, is the need for a simple way to deploy a set of apps you need on every cluster, that doesn&amp;rsquo;t involve a complicated solution. I am an &amp;lsquo;Ops&amp;rsquo; guy by trade so creating release artifacts and NuGet packages doesn&amp;rsquo;t come naturally too me.</description>
     </item>
-    
     <item>
       <title>Azure SQL Elastic Pool Automatic Storage Scaling</title>
       <link>https://www.andyroberts.nz/posts/elastic-pool-scaling/</link>
       <pubDate>Wed, 24 Nov 2021 21:01:55 +1300</pubDate>
-      
       <guid>https://www.andyroberts.nz/posts/elastic-pool-scaling/</guid>
       <description>Azure SQL Elastic Pools offer some great benefits for SQL Databases such as DTU based Performance and on-demand scaling up and down of compute/memory/storage via the Azure Portal. However, one thing that is not native out of the box, is scaling of storage on an elastic pool, in response to storage pressure. Recently I was exposed to this where an elastic pool reached its storage limit due to large amounts of data load happening, which caused the pool to run out of space and which would then quickly cause an outage as databases couldn&amp;rsquo;t allocate anymore space.</description>
     </item>
-    
     <item>
       <title>Control Azure Devops Pipelines with Powershell</title>
       <link>https://www.andyroberts.nz/posts/azure-devops-pipelines-powershell/</link>
       <pubDate>Sat, 23 Oct 2021 19:54:08 +1300</pubDate>
-      
       <guid>https://www.andyroberts.nz/posts/azure-devops-pipelines-powershell/</guid>
       <description>Pipelines in Azure DevOps are extremely useful and its something I used daily for Infrastructure Builds with Terraform on Azure and AWS. Normally these are triggered automatically as part of a pull request and merge to main, but there are times when you want to interact manually with them, such as starting or cancelling pipelines in bulk, and this is where this tip comes in handy.
 If you want to start/cancel a single pipeline, via the Azure DevOps portal is quick and easy.</description>
     </item>
-    
     <item>
       <title>Azure Devops Pipelines - Could not get lock /var/lib/dpkg/lock-frontend</title>
       <link>https://www.andyroberts.nz/posts/azure-devops-lock/</link>
       <pubDate>Fri, 10 Sep 2021 16:11:10 +1200</pubDate>
-      
       <guid>https://www.andyroberts.nz/posts/azure-devops-lock/</guid>
       <description>I&amp;rsquo;ve been using Azure DevOps Pipelines to build our Azure Infrastructure with Terraform for nearly 9 months now and its been pretty much rock solid. However, this week all of a sudden my pipelines started failing if I ran more than 1 build at a time, and all gave this error.
 E: Could not get lock /var/lib/dpkg/lock-frontend - open (11: Resource temporarily unavailable) E: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), is another process using it?</description>
     </item>
-    
     <item>
       <title>HTTPS to AKS with Traefik and Lets Encrypt</title>
       <link>https://www.andyroberts.nz/posts/aks-traefik-https/</link>
       <pubDate>Fri, 04 Jun 2021 15:10:24 +1200</pubDate>
-      
       <guid>https://www.andyroberts.nz/posts/aks-traefik-https/</guid>
       <description>I&amp;rsquo;ll preface this blog post with the fact that I am FAR FAR away from any kind of expert on Kubernetes and AKS. I am still very early in my journey with it, and a lot of my experience so far is trial and error. I have also found that there is a lot of documentation out there on how to do things, but a lot of it assumes a fairly decent knowledge of how everything sticks together, so for a newbie to Kubernetes it can be quite challenging.</description>
     </item>
-    
     <item>
       <title>Azure Backups for Virtual Machines and SQL</title>
       <link>https://www.andyroberts.nz/posts/azure-backup/</link>
       <pubDate>Thu, 29 Apr 2021 15:00:00 +1200</pubDate>
-      
       <guid>https://www.andyroberts.nz/posts/azure-backup/</guid>
       <description>Backups are a necessity but it still amazes me the amount of companies I have worked at where you find backups are just not done, or just as bad, are done but are never checked!
 There are multiple ways to do backups depending where your data lives. Veeam, BackupExec, etc, but if you are running your infrastructure in Azure and you are using Virtual Machines then Azure Backup is an amazing tool for this.</description>
     </item>
-    
     <item>
       <title>Azure Logic Apps for Application Gateway Reports</title>
       <link>https://www.andyroberts.nz/posts/logic-apps-sharepoint/</link>
       <pubDate>Tue, 20 Apr 2021 13:59:18 +1200</pubDate>
-      
       <guid>https://www.andyroberts.nz/posts/logic-apps-sharepoint/</guid>
       <description>Web Frontend&amp;rsquo;s are probably one of the most used workloads in Cloud today. Your ingress is basically your income for many companies, and technologies used such as Apache, NGINX, IIS mixed with your edge devices make up this stack.
 In my current role we make heavy use of Azure Application Gateways which are L7 HTTP(S) Load Balancers for our web front end. As the products we supply to clients are web based these are a perfect fit for our needs.</description>
     </item>
-    
     <item>
       <title>About Me</title>
       <link>https://www.andyroberts.nz/about/</link>
       <pubDate>Mon, 19 Apr 2021 19:58:42 +1200</pubDate>
-      
       <guid>https://www.andyroberts.nz/about/</guid>
       <description>Hi, I&amp;rsquo;m Andy Roberts and welcome to my Blog!
 Currently I live in Auckland, New Zealand and work for a company called Vista Entertainment as a Cloud Engineer. Day to day, this means I am working primarily with Azure, but also with AWS. So each day I&amp;rsquo;m building infrastructure, automating deployments with tools such as Powershell and Terraform and generally all things Cloud.
 Before that I spent several years with companies such as WEX Inc which is where I honed my Cloud skills working on some pretty massive AWS deployments.</description>
     </item>
-    
     <item>
       <title>Cloud Engineer / Architect</title>
       <link>https://www.andyroberts.nz/cv/</link>
       <pubDate>Mon, 19 Apr 2021 19:58:42 +1200</pubDate>
-      
       <guid>https://www.andyroberts.nz/cv/</guid>
       <description>I’m a passionate Cloud Engineer with in-depth experience of both Azure and AWS, with a particular passion for infrastructure and platform automation. Having worked in a variety of IT roles for over 20 years, across a number of companies around the world, it has given me a great appreciation for how to help companies and my clients get the best value out of their technology stacks. I’m an avid learner and adopter of new technologies, always willing to go that extra mile to get the job done.</description>
     </item>
-    
     <item>
       <title>Welcome to the Blog</title>
       <link>https://www.andyroberts.nz/posts/my-first-blog/</link>
       <pubDate>Sun, 18 Apr 2021 16:07:24 +1200</pubDate>
-      
       <guid>https://www.andyroberts.nz/posts/my-first-blog/</guid>
       <description>Hi, I&amp;rsquo;m Andy Roberts and welcome to my Blog!
 I wanted to start a blog for a while, as I working in the IT &amp;amp; Cloud Industry, I get so much value finding resources and useful knowledge from people using their free time to post blogs to share with others. So I thought it was about time I start giving back and do the same!
 I&amp;rsquo;m planning to write as many articles as I can find time on with useful guides to what I have been working on, in the hope it helps people like you when searching out how to do something.</description>
     </item>
-    
   </channel>
 </rss>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>cka on Andy Roberts</title>
+    <link>https://www.andyroberts.nz/tags/cka/</link>
+    <description>Recent content in cka on Andy Roberts</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 25 Oct 2024 20:30:00 +1300</lastBuildDate>
+    <atom:link href="https://www.andyroberts.nz/tags/cka/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CKA Exam Tips</title>
+      <link>https://www.andyroberts.nz/posts/cka/</link>
+      <pubDate>Fri, 25 Oct 2024 20:30:00 +1300</pubDate>
+      <guid>https://www.andyroberts.nz/posts/cka/</guid>
+      <description>The Certified Kubernetes Administrator (CKA) had been on my radar for a while, but my passion for not enjoying exams kept from committing to it. But after running into some curly Kubernetes at work I decided I would give it a try as even if I failed, the learning aspect of it would be most valuable.
+Background - I use Kubernetes, well AKS, A LOT in my day job. I am part of a team which designs/deploys/manages around 30 AKS clusters in many different regions, with lots of different workloads on them, plus also chucking in the dreaded Windows node pools for good measure.</description>
+    </item>
+  </channel>
+</rss>
