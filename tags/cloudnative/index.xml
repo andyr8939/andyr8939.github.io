@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>cloudnative on Andy Roberts</title>
+    <link>https://www.andyroberts.nz/tags/cloudnative/</link>
+    <description>Recent content in cloudnative on Andy Roberts</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 17 Nov 2024 11:36:54 -0800</lastBuildDate>
+    <atom:link href="https://www.andyroberts.nz/tags/cloudnative/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>KubeCon &amp; CloudNative Con North America 2024 </title>
+      <link>https://www.andyroberts.nz/posts/kubecon/</link>
+      <pubDate>Sun, 17 Nov 2024 11:36:54 -0800</pubDate>
+      <guid>https://www.andyroberts.nz/posts/kubecon/</guid>
+      <description>Well, the last week has been a whirlwind as I was fortunate to attend KubeCon + CloudNativeCon in Salt Lake City, Utah. Being based in New Zealand means we have few choices for conferences, so being able to attend KubeCon for the first time was a real eye opener.
+Flying into Salt Lake City after 27 hours of travel from New Zealand, the snowcapped peaks of the Wasatch Mountains were a real treat.</description>
+    </item>
+  </channel>
+</rss>

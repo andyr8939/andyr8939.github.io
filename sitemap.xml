@@ -3,7 +3,22 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://www.andyroberts.nz/</loc>
-    <lastmod>2024-10-25T20:30:00+13:00</lastmod>
+    <lastmod>2024-11-17T11:36:54-08:00</lastmod>
+  </url><url>
+    <loc>https://www.andyroberts.nz/tags/cloudnative/</loc>
+    <lastmod>2024-11-17T11:36:54-08:00</lastmod>
+  </url><url>
+    <loc>https://www.andyroberts.nz/tags/kubecon/</loc>
+    <lastmod>2024-11-17T11:36:54-08:00</lastmod>
+  </url><url>
+    <loc>https://www.andyroberts.nz/posts/kubecon/</loc>
+    <lastmod>2024-11-17T11:36:54-08:00</lastmod>
+  </url><url>
+    <loc>https://www.andyroberts.nz/tags/kubernetes/</loc>
+    <lastmod>2024-11-17T11:36:54-08:00</lastmod>
+  </url><url>
+    <loc>https://www.andyroberts.nz/posts/</loc>
+    <lastmod>2024-11-17T11:36:54-08:00</lastmod>
   </url><url>
     <loc>https://www.andyroberts.nz/tags/certification/</loc>
     <lastmod>2024-10-25T20:30:00+13:00</lastmod>
@@ -12,12 +27,6 @@
     <lastmod>2024-10-25T20:30:00+13:00</lastmod>
   </url><url>
     <loc>https://www.andyroberts.nz/posts/cka/</loc>
-    <lastmod>2024-10-25T20:30:00+13:00</lastmod>
-  </url><url>
-    <loc>https://www.andyroberts.nz/tags/kubernetes/</loc>
-    <lastmod>2024-10-25T20:30:00+13:00</lastmod>
-  </url><url>
-    <loc>https://www.andyroberts.nz/posts/</loc>
     <lastmod>2024-10-25T20:30:00+13:00</lastmod>
   </url><url>
     <loc>https://www.andyroberts.nz/tags/aks/</loc>

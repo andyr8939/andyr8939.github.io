@@ -9,6 +9,27 @@
     <lastBuildDate>Mon, 19 Apr 2021 20:32:22 +1200</lastBuildDate>
     <atom:link href="https://www.andyroberts.nz/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>cloudnative</title>
+      <link>https://www.andyroberts.nz/tags/cloudnative/</link>
+      <pubDate>Sun, 17 Nov 2024 11:36:54 -0800</pubDate>
+      <guid>https://www.andyroberts.nz/tags/cloudnative/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>kubecon</title>
+      <link>https://www.andyroberts.nz/tags/kubecon/</link>
+      <pubDate>Sun, 17 Nov 2024 11:36:54 -0800</pubDate>
+      <guid>https://www.andyroberts.nz/tags/kubecon/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>kubernetes</title>
+      <link>https://www.andyroberts.nz/tags/kubernetes/</link>
+      <pubDate>Sun, 17 Nov 2024 11:36:54 -0800</pubDate>
+      <guid>https://www.andyroberts.nz/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    <item>
       <title>certification</title>
       <link>https://www.andyroberts.nz/tags/certification/</link>
       <pubDate>Fri, 25 Oct 2024 20:30:00 +1300</pubDate>
@@ -20,13 +41,6 @@
       <link>https://www.andyroberts.nz/tags/cka/</link>
       <pubDate>Fri, 25 Oct 2024 20:30:00 +1300</pubDate>
       <guid>https://www.andyroberts.nz/tags/cka/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>kubernetes</title>
-      <link>https://www.andyroberts.nz/tags/kubernetes/</link>
-      <pubDate>Fri, 25 Oct 2024 20:30:00 +1300</pubDate>
-      <guid>https://www.andyroberts.nz/tags/kubernetes/</guid>
       <description></description>
     </item>
     <item>
